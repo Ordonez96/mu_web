@@ -1,0 +1,158 @@
+/* General Styles */
+html, body {
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  scroll-behavior: auto !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#root {
+  height: 100%;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.main-content {
+  flex: 1 0 auto;
+}
+
+main {
+  flex: 1;
+  overflow-x: hidden;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #282c34;
+  padding: 0.625rem; /* 10px to rem */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.logo:hover {
+  color: crimson;
+}
+
+.navbar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.navbar ul li {
+  margin: 0 0.9375rem; /* 15px to rem */
+  position: relative;
+}
+
+.navbar ul li a, .navbar ul li span {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.navbar ul li a:hover, .navbar ul li span:hover {
+  color: lightgray;
+}
+
+/* Dropdown */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #444;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  top: 100%;
+  left: 0;
+  width: 9.375rem; /* 150px to rem */
+}
+
+.dropdown:hover .dropdown-content, .dropdown-content li {
+  display: block;
+}
+
+.dropdown-content li {
+  border-bottom: 0.0625rem solid #666; /* 1px to rem */
+}
+
+.dropdown-content li a {
+  display: block;
+  padding: 0.625rem; /* 10px to rem */
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 37.5em) { /* 600px to em */
+  .navbar {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .navbar ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .navbar ul li {
+    margin: 0.625rem 0; /* 10px to rem */
+  }
+}
+
+/* Content Sections */
+.home, .music, .contact {
+  padding: 1.25rem; /* 20px to rem */
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 25rem; /* 400px to rem */
+  margin: 0 auto;
+}
+
+input, textarea {
+  margin-bottom: 0.625rem; /* 10px to rem */
+  padding: 0.625rem; /* 10px to rem */
+}
+
+button {
+  padding: 0.625rem; /* 10px to rem */
+  background-color: #282c34;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #4caf50;
+}
+
+/* Footer */
+footer {
+  background-color: #282c34;
+  color: white;
+  padding: 1.25rem; /* 20px to rem */
+  text-align: center;
+  width: 100%;
+  margin-top: auto;
+}

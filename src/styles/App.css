@@ -1,158 +1,306 @@
-/* General Styles */
-html, body {
-  background-color: #ffffff;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  scroll-behavior: auto !important;
-  overflow-x: hidden;
-  overflow-y: auto;
+/* =========================================================
+   MU Consulting · Sistema de diseño global
+   Basado en la guía visual de TAR (paleta bancaria sobria).
+   ========================================================= */
+
+:root {
+  /* Paleta TAR */
+  --navy: #0b1f3a;
+  --brand: #1e3a8a;
+  --brand-2: #1e40af;
+  --navy-2: #1e3a5f;
+  --text: #334155;
+  --muted: #64748b;
+  --bg: #f3f5f8;
+  --white: #ffffff;
+  --border: rgba(11, 31, 58, 0.08);
+  --border-strong: rgba(11, 31, 58, 0.16);
+
+  /* Degradado único de módulo (igual para todos) */
+  --grad: linear-gradient(135deg, #1e3a5f 0%, #0b1f3a 50%, #1e40af 100%);
+  --grad-text: linear-gradient(135deg, #0b1f3a 0%, #1e3a8a 60%, #1e40af 100%);
+
+  /* Semántica de riesgo (solo para niveles de riesgo) */
+  --r-bajo: #0f9f8f;
+  --r-moderado: #3b6fd8;
+  --r-alto: #e39a1c;
+  --r-critico: #d63b55;
+
+  /* Curva única */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Tipografía */
+  --font-display: 'Chakra Petch', 'Segoe UI', sans-serif;
+  --font-body: 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgba(11, 31, 58, 0.06), 0 2px 8px rgba(11, 31, 58, 0.05);
+  --shadow-md: 0 10px 30px -12px rgba(11, 31, 58, 0.22);
+  --shadow-lg: 0 24px 60px -24px rgba(11, 31, 58, 0.35);
+
+  --nav-h: 72px;
+  --radius: 20px;
+  --radius-sm: 12px;
 }
 
-#root {
-  height: 100%;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--white);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: auto !important; /* ScrollToTop controla el scroll */
+}
+
+/*
+ * overflow-x: clip (no hidden): evita el scroll horizontal SIN convertir
+ * el body en contenedor de scroll, así window.scrollY y el navbar sticky funcionan.
+ */
+body {
+  overflow-x: clip;
 }
 
 .App {
+  position: relative;
+  z-index: 1; /* el contenido va por encima del panal fijo */
   display: flex;
   flex-direction: column;
-  min-height: 100%;
+  min-height: 100vh;
+}
+
+/* Panal global: fijo detrás de todo, acompaña el scroll de arriba abajo */
+.mu-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 50% at 0% 0%, rgba(30, 64, 175, 0.08), transparent 70%),
+    radial-gradient(40% 50% at 100% 100%, rgba(30, 58, 138, 0.07), transparent 70%),
+    linear-gradient(180deg, #ffffff 0%, #f3f5f8 100%);
+}
+
+/* Trama hexagonal estática para las franjas marinas (continuidad del panal) */
+.mu-trama {
+  position: relative;
+  isolation: isolate;
+}
+.mu-trama::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='78' height='90' viewBox='0 0 78 90'%3E%3Cpath d='M39 1 77 23v44L39 89 1 67V23z' fill='none' stroke='%23fff' stroke-opacity='.06'/%3E%3C/svg%3E");
+  background-size: 52px 60px;
+  pointer-events: none;
 }
 
 .main-content {
   flex: 1 0 auto;
 }
 
-main {
-  flex: 1;
-  overflow-x: hidden;
+img {
+  max-width: 100%;
+  display: block;
 }
 
-/* Navbar */
-.navbar {
-  background-color: #282c34;
-  padding: 0.625rem; /* 10px to rem */
-  color: white;
-  display: flex;
+a {
+  color: inherit;
+}
+
+/* ---------- Primitivas compartidas (prefijo mu-) ---------- */
+
+.mu-container {
+  width: min(1200px, 100% - 32px);
+  margin-inline: auto;
+}
+
+.mu-narrow {
+  width: min(800px, 100% - 32px);
+  margin-inline: auto;
+}
+
+.mu-section {
+  padding: clamp(64px, 8vw, 104px) 0;
+}
+
+.mu-section--alt {
+  /* Translúcida: el panal global se ve a través */
+  background: rgba(243, 245, 248, 0.55);
+  border-block: 1px solid var(--border);
+}
+
+/* Título de sección: degradado marino */
+.mu-title {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  line-height: 1.12;
+  letter-spacing: -0.005em;
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  max-width: 26ch;
+  text-wrap: balance;
+}
+
+/* Barra de acento 56×3 bajo encabezados */
+.mu-accent {
+  display: block;
+  width: 56px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--grad);
+  margin: 0 0 22px;
+}
+
+.mu-lead {
+  margin: 0 0 40px;
+  color: var(--muted);
+  font-size: 1.08rem;
+  max-width: 64ch;
+}
+
+/* Chip de marca */
+.mu-chip {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy);
 }
 
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.3s ease-in-out;
+.mu-chip::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--grad);
 }
 
-.logo:hover {
-  color: crimson;
-}
-
-.navbar ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-}
-
-.navbar ul li {
-  margin: 0 0.9375rem; /* 15px to rem */
-  position: relative;
-}
-
-.navbar ul li a, .navbar ul li span {
-  color: white;
+/* Botones */
+.mu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 26px;
+  border-radius: 12px;
+  border: 0;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
   text-decoration: none;
   cursor: pointer;
-  transition: color 0.3s;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background-color 0.2s ease;
 }
 
-.navbar ul li a:hover, .navbar ul li span:hover {
-  color: lightgray;
+.mu-btn--primary {
+  background: var(--grad);
+  color: #fff;
+  box-shadow: 0 8px 20px -10px rgba(30, 58, 138, 0.8);
 }
 
-/* Dropdown */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #444;
-  list-style: none;
-  padding: 0;
+.mu-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -12px rgba(30, 58, 138, 0.9);
+}
+
+.mu-btn--ghost {
+  background: var(--white);
+  color: var(--navy);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+.mu-btn--ghost:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 0 0 1px var(--brand), var(--shadow-sm);
+}
+
+.mu-btn--light {
+  background: #fff;
+  color: var(--navy);
+}
+
+.mu-btn--light:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -14px rgba(0, 0, 0, 0.5);
+}
+
+/* Hexágono horizontal reutilizable (íconos, viñetas) */
+.mu-hex {
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+/* Lámina para diagramas con texto oscuro */
+.mu-figure {
   margin: 0;
-  top: 100%;
-  left: 0;
-  width: 9.375rem; /* 150px to rem */
+  padding: clamp(16px, 2.5vw, 28px);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
 }
 
-.dropdown:hover .dropdown-content, .dropdown-content li {
-  display: block;
-}
-
-.dropdown-content li {
-  border-bottom: 0.0625rem solid #666; /* 1px to rem */
-}
-
-.dropdown-content li a {
-  display: block;
-  padding: 0.625rem; /* 10px to rem */
-  color: white;
-}
-
-/* Responsive */
-@media (max-width: 37.5em) { /* 600px to em */
-  .navbar {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .navbar ul {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .navbar ul li {
-    margin: 0.625rem 0; /* 10px to rem */
-  }
-}
-
-/* Content Sections */
-.home, .music, .contact {
-  padding: 1.25rem; /* 20px to rem */
-  text-align: center;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  max-width: 25rem; /* 400px to rem */
-  margin: 0 auto;
-}
-
-input, textarea {
-  margin-bottom: 0.625rem; /* 10px to rem */
-  padding: 0.625rem; /* 10px to rem */
-}
-
-button {
-  padding: 0.625rem; /* 10px to rem */
-  background-color: #282c34;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #4caf50;
-}
-
-/* Footer */
-footer {
-  background-color: #282c34;
-  color: white;
-  padding: 1.25rem; /* 20px to rem */
-  text-align: center;
+.mu-figure img {
   width: 100%;
-  margin-top: auto;
+  height: auto;
+}
+
+.mu-figure figcaption {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Anclas: que el navbar fijo no tape el título al saltar */
+[id] {
+  scroll-margin-top: calc(var(--nav-h) + 16px);
+}
+
+/* Foco visible accesible y consistente */
+:focus-visible {
+  outline: 2px solid var(--brand-2);
+  outline-offset: 3px;
+}
+
+.mu-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

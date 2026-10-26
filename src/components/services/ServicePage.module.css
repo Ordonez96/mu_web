@@ -1,0 +1,180 @@
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(32px, 6vw, 72px);
+  align-items: center;
+}
+
+.invertida > .texto {
+  order: 2;
+}
+
+.parrafo {
+  margin: 0 0 14px;
+  max-width: 62ch;
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+/* Frase clave (antes en rojo): resaltado sobrio con subrayado de marca */
+.resaltado {
+  background: linear-gradient(transparent 62%, rgba(30, 64, 175, 0.16) 62%);
+  color: var(--navy);
+  font-weight: 600;
+  padding: 0 2px;
+}
+
+.lista {
+  margin-top: 24px;
+}
+
+.listaTitulo {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.media {
+  min-width: 0;
+}
+
+.ilustracion {
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 3vw, 32px);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(60% 60% at 50% 45%, rgba(30, 64, 175, 0.08), transparent 70%);
+}
+
+.ilustracion img {
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+}
+
+/* Llamada a TAR */
+.destacado {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 22px;
+  padding: 24px 28px;
+  border-radius: var(--radius);
+  background: var(--grad);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.3s var(--ease);
+}
+
+.destacado:hover {
+  transform: translateY(-2px);
+}
+
+.destacadoHex {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 62px;
+  background: #fff;
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.destacado strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+
+.destacado small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.97rem;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.destacadoCta {
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.14);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Otros servicios */
+.otros {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.otro {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  height: 100%;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fff;
+  text-decoration: none;
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease), transform 0.25s var(--ease);
+}
+
+.otro:hover {
+  border-color: rgba(30, 58, 138, 0.35);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.otroIcono {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 38px;
+  background: var(--grad);
+  color: #fff;
+}
+
+.otro strong {
+  display: block;
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+}
+
+.otro small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 899.98px) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+  .invertida > .texto {
+    order: 0;
+  }
+  .otros {
+    grid-template-columns: 1fr;
+  }
+  .destacado {
+    grid-template-columns: auto 1fr;
+  }
+  .destacadoCta {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}

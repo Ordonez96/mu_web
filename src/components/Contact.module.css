@@ -1,0 +1,117 @@
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  padding-bottom: clamp(48px, 6vw, 80px);
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  padding: 28px 30px;
+  border-radius: var(--radius);
+  border: 1px solid #fff;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.92));
+  box-shadow: 0 30px 60px -30px rgba(11, 31, 58, 0.28), 0 2px 8px rgba(11, 31, 58, 0.05);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--grad);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.cardTop img {
+  width: 64px;
+  height: 64px;
+}
+
+.cardTop h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.cardTop p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.filas {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.filas li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text);
+}
+
+.filas a {
+  color: var(--navy);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.filas a:hover {
+  color: var(--brand);
+  border-bottom-color: currentColor;
+}
+
+.filaIcono {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 33px;
+  background: rgba(30, 58, 138, 0.08);
+  color: var(--brand);
+}
+
+.filaIcono svg {
+  font-size: 1.15rem;
+}
+
+.ubicacion {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(28px, 5vw, 56px);
+  align-items: start;
+}
+
+.mapa {
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  background: #fff;
+  line-height: 0;
+}
+
+@media (max-width: 899.98px) {
+  .cards,
+  .ubicacion {
+    grid-template-columns: 1fr;
+  }
+}

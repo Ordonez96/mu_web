@@ -29,7 +29,7 @@ function ScrollToTop() {
 
     // Ejecutar después de un pequeño delay
     setTimeout(scrollToTop, 0);
-    
+
     // Ejecutar después de que el contenido se cargue
     window.addEventListener('load', scrollToTop, { once: true });
 

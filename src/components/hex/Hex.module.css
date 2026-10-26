@@ -1,0 +1,630 @@
+/* =========================================================
+   Hexágonos estilo TAR: canvas, flor, núcleo y panel
+   Solo se animan transform/opacity (rendimiento).
+   ========================================================= */
+
+/* ---------- Lienzo de página (fondo + canvas) ---------- */
+.lienzo {
+  position: relative;
+  isolation: isolate;
+  /* Transparente: el fondo y el panal los pone .mu-fondo (global y fijo) */
+  background: transparent;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.lienzoContenido {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Encabezado de página ---------- */
+.encabezado {
+  padding-top: clamp(36px, 5vw, 56px);
+  margin-bottom: clamp(28px, 4vw, 44px);
+}
+
+.encabezadoTitulo {
+  margin: 16px 0 12px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.9rem, 4.2vw, 3.2rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  max-width: 22ch;
+}
+
+.encabezadoSub {
+  margin: 14px 0 0;
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.3vw, 1.12rem);
+}
+
+/* ---------- Fila: hexágonos izquierda, panel derecha ---------- */
+.fila {
+  display: flex;
+  align-items: flex-start; /* nunca center en md */
+  gap: 28px;
+  padding-bottom: clamp(48px, 6vw, 80px);
+}
+
+.columnaHex {
+  position: relative;
+  flex: 0 0 47%;
+  max-width: 47%;
+  min-height: 500px;
+  order: 1;
+}
+
+.escenario {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center center;
+}
+
+.panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+  order: 2;
+  margin-right: 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 36px;
+  border-radius: 20px;
+  border: 1px solid #ffffff;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 252, 0.9));
+  box-shadow: 0 30px 60px -30px rgba(11, 31, 58, 0.28), 0 2px 8px rgba(11, 31, 58, 0.05);
+}
+
+/* ---------- Hexágono ---------- */
+.hex {
+  position: absolute;
+  width: 210px;
+  height: 180px;
+  pointer-events: none; /* el área de clic es la forma hexagonal */
+}
+
+.hexMovil {
+  position: relative;
+  width: 280px;
+  height: 230px;
+  margin-inline: auto;
+}
+
+.cuerpo {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.4s var(--ease), opacity 0.35s var(--ease);
+}
+
+.sombra {
+  position: absolute;
+  inset: 10px 6px -4px;
+  filter: blur(12px); /* estático: solo se anima opacity/transform */
+  opacity: 0.28;
+  transform: translateY(6px);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+.sombra > span {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 31, 58, 0.55);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+.borde,
+.contenido {
+  position: absolute;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  pointer-events: auto;
+}
+
+.borde {
+  inset: 0;
+  background: var(--grad);
+}
+
+.contenido {
+  inset: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 34px;
+  text-align: center;
+  background: #ffffff;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+/* Degradado de estado activo */
+.contenido::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grad);
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+  z-index: 0;
+}
+
+/* Destello diagonal que cruza */
+.contenido::after {
+  content: '';
+  position: absolute;
+  inset: -20% -60%;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.42) 50%, transparent 62%);
+  transform: translateX(-75%);
+  opacity: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.contenido > * {
+  position: relative;
+  z-index: 1;
+}
+
+.icono {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--grad);
+  color: #fff;
+  transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
+}
+.icono svg {
+  font-size: 1.45rem;
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.15;
+  color: var(--navy);
+  transition: color 0.3s var(--ease);
+}
+
+.chip {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--brand);
+  background: rgba(30, 58, 138, 0.08);
+  transition: color 0.3s var(--ease), background-color 0.3s var(--ease);
+}
+
+/* estadoActivo: hover, foco o activo */
+.estadoActivo {
+  transform: scale(1.04);
+}
+.estadoActivo .sombra {
+  opacity: 0.55;
+  transform: translateY(12px);
+}
+.estadoActivo .contenido::before {
+  opacity: 1;
+}
+.estadoActivo .contenido::after {
+  opacity: 1;
+  transform: translateX(75%);
+  transition: transform 0.9s var(--ease), opacity 0.2s ease;
+}
+.estadoActivo .titulo {
+  color: #fff;
+}
+.estadoActivo .chip {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+}
+.estadoActivo .icono {
+  background: #fff;
+  color: var(--navy);
+}
+
+.atenuado {
+  opacity: 0.55;
+}
+
+.contenido:focus-visible {
+  outline: none;
+}
+.cuerpo:has(.contenido:focus-visible) .borde {
+  background: linear-gradient(135deg, #3b82f6, #1e40af);
+}
+
+/* ---------- Núcleo TAR ---------- */
+.nucleo {
+  position: absolute;
+  width: 210px;
+  height: 180px;
+  pointer-events: none;
+}
+
+.nucleoHalo {
+  position: absolute;
+  inset: -14px -16px;
+  background: var(--grad);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  opacity: 0.16;
+  animation: latido 2.8s var(--ease) infinite;
+}
+
+.nucleoSombra {
+  position: absolute;
+  inset: 14px 8px -8px;
+  filter: blur(14px);
+  opacity: 0.45;
+}
+.nucleoSombra > span {
+  position: absolute;
+  inset: 0;
+  background: #0b1f3a;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+.nucleoCuerpo {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--grad);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+.nucleoConico {
+  position: absolute;
+  inset: -60%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 255, 255, 0.22) 50deg, transparent 110deg, transparent 360deg);
+  animation: giro 12s linear infinite;
+}
+
+.nucleoContorno {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.nucleoContorno polygon {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.nucleoTexto {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: #fff;
+}
+.nucleoTexto strong {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  line-height: 1.1;
+}
+.nucleoTexto small {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  opacity: 0.82;
+}
+
+.nucleoIcono {
+  font-size: 2rem !important;
+  margin-bottom: 4px;
+  transition: transform 0.6s var(--ease);
+}
+.nucleoIconoFoco {
+  transform: rotate(60deg);
+}
+
+@keyframes latido {
+  0%, 100% { transform: scale(1); opacity: 0.16; }
+  50% { transform: scale(1.05); opacity: 0.28; }
+}
+
+@keyframes giro {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Panel ---------- */
+.barra {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--grad);
+  transform-origin: left center;
+  z-index: 2;
+}
+
+.marca {
+  position: absolute;
+  right: -24px;
+  bottom: -28px;
+  color: var(--navy);
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 0;
+}
+.marca svg {
+  font-size: 200px;
+  display: block;
+}
+
+.panelAnim {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelContenido {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.eyebrowPunto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--grad);
+}
+
+.eyebrowChip {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(30, 58, 138, 0.08);
+  color: var(--brand);
+  letter-spacing: 0.04em;
+}
+
+.panelTitulo {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.45rem, 2.3vw, 1.95rem);
+  line-height: 1.15;
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.panelParrafo {
+  margin: 0 0 12px;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.ingresar {
+  margin-top: auto;
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 18px;
+  font-weight: 600;
+  color: var(--brand);
+}
+.ingresarFlecha {
+  font-size: 1.2rem !important;
+  animation: flecha 1.4s var(--ease) infinite;
+}
+@keyframes flecha {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+
+/* Accesos rápidos */
+.accesos {
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.accesosTitulo {
+  margin: 0 0 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.accesosGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.acceso {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 8px 12px;
+  text-align: left;
+  font: inherit;
+  color: var(--navy);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.acceso:hover,
+.acceso:focus-visible {
+  border-color: rgba(30, 58, 138, 0.35);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.accesoIcono {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 30px;
+  background: var(--grad);
+  color: #fff;
+}
+.accesoIcono svg {
+  font-size: 1.05rem;
+}
+
+.accesoTexto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+.accesoTexto strong {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+.accesoTexto small {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+/* Medidor invisible (alto fijo del panel) */
+.medidor {
+  position: absolute;
+  top: 0;
+  left: 36px;
+  right: 36px;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+.medidor > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Móvil (< md) ---------- */
+.pila {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0 16px;
+}
+
+@media (min-width: 600px) {
+  .hexMovil {
+    width: 300px;
+    height: 250px;
+  }
+}
+
+@media (max-width: 899.98px) {
+  .fila {
+    flex-direction: column;
+    align-items: center;
+  }
+  .columnaHex {
+    flex: 1 1 auto;
+    max-width: 100%;
+    width: 100%;
+    min-height: 0;
+    order: 2;
+  }
+  .panel {
+    order: 1;
+    width: 100%;
+    margin-right: 0;
+    padding: 26px 22px;
+  }
+  .hexMovil .contenido {
+    padding: 0 48px;
+  }
+  .hexMovil .titulo {
+    font-size: 1.12rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .accesosGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nucleoHalo,
+  .nucleoConico,
+  .ingresarFlecha {
+    animation: none;
+  }
+}
+
+/* Layout de escritorio forzado (réplica dentro de la ventana 3D, aunque el viewport sea móvil) */
+.filaForzada {
+  flex-direction: row !important;
+  align-items: flex-start !important;
+}
+.filaForzada .columnaHex {
+  flex: 0 0 47% !important;
+  max-width: 47% !important;
+  min-height: 500px !important;
+  order: 1 !important;
+}
+.filaForzada .panel {
+  order: 2 !important;
+  width: auto !important;
+  margin-right: 16px !important;
+  padding: 32px 36px !important;
+}
+.filaForzada .accesosGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}

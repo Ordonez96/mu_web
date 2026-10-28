@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import PageHeader from './ui/PageHeader';
-import HexFlower from './hex/HexFlower';
+import HexFlower, { UI } from './hex/HexFlower';
 import CtaBand from './ui/CtaBand';
 import HexList from './ui/HexList';
 import { getIcon } from './ui/icons';
@@ -58,18 +59,25 @@ const Home = () => {
               </Link>
             </div>
             <ul className={styles.credenciales}>
-              {CREDENCIALES.map((c) => {
+              {CREDENCIALES.map((c, i) => {
                 const Icon = getIcon(c.icon);
                 return (
-                  <li key={c.titulo} className={styles.credencial}>
-                    <span className={styles.credencialIcono} aria-hidden="true">
+                  /* Entrada en cascada tras el titular, con la curva del sitio */
+                  <motion.li
+                    key={c.titulo}
+                    className={styles.credencial}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.35 + i * 0.08, ease: UI.ease }}
+                  >
+                    <span className={`${styles.credencialIcono} mu-hex`} aria-hidden="true">
                       <Icon />
                     </span>
                     <span>
                       <strong>{c.titulo}</strong>
                       <small>{c.texto}</small>
                     </span>
-                  </li>
+                  </motion.li>
                 );
               })}
             </ul>

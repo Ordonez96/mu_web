@@ -1,15 +1,11 @@
+/* Navbar flotante: barra tipo "píldora" separada de los bordes */
 .header {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: var(--z-nav);
   height: var(--nav-h);
-  background: rgba(255, 255, 255, 0.97); /* casi opaco: sin backdrop-filter sobre el canvas */
-  border-bottom: 1px solid var(--border);
-  transition: box-shadow 0.3s var(--ease);
-}
-
-.headerSombra {
-  box-shadow: 0 8px 24px -16px rgba(11, 31, 58, 0.35);
+  padding: 12px 0;
+  pointer-events: none; /* solo la barra recibe clics */
 }
 
 .bar {
@@ -18,6 +14,17 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+  padding: 0 10px 0 16px;
+  background: rgba(255, 255, 255, 0.96); /* casi opaco: sin backdrop-filter sobre el canvas */
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  pointer-events: auto;
+  transition: box-shadow var(--dur) ease-out;
+}
+
+.headerSombra .bar {
+  box-shadow: var(--shadow-md);
 }
 
 .logo {
@@ -26,7 +33,7 @@
   flex-shrink: 0;
 }
 .logo img {
-  height: 58px;
+  height: 46px;
   width: auto;
 }
 
@@ -56,15 +63,15 @@
   font: inherit;
   font-size: 0.95rem;
   font-weight: 500;
-  color: var(--text);
+  color: var(--muted);
   text-decoration: none;
   cursor: pointer;
-  transition: color 0.2s ease, background-color 0.2s ease;
+  transition: color var(--dur) ease-out, background-color var(--dur) ease-out;
 }
 
 .link:hover {
   color: var(--navy);
-  background: rgba(30, 58, 138, 0.06);
+  background: var(--bg);
 }
 
 /* Indicador de ruta activa: barra con el degradado */
@@ -73,13 +80,13 @@
   position: absolute;
   left: 14px;
   right: 14px;
-  bottom: 2px;
-  height: 3px;
-  border-radius: 3px;
-  background: var(--grad);
+  bottom: 4px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--brand);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.35s var(--ease);
+  transition: transform var(--dur) ease-out;
 }
 
 .activo {
@@ -99,19 +106,19 @@
 .destacadoHex {
   width: 12px;
   height: 10px;
-  background: var(--grad);
+  background: var(--brand);
 }
 
 .chevron {
   font-size: 1.15rem !important;
-  transition: transform 0.3s var(--ease);
+  transition: transform var(--dur) ease-out;
 }
 .chevronAbierto {
   transform: rotate(180deg);
 }
 
 .cta {
-  min-height: 42px;
+  min-height: 44px;
   margin-left: 8px;
   padding: 0 20px;
   font-size: 0.95rem;
@@ -129,10 +136,11 @@
   border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: var(--shadow-lg);
+  z-index: var(--z-dropdown);
 }
 
 .dropdown {
-  top: calc(100% + 6px);
+  top: calc(100% + 12px);
   left: 0;
 }
 
@@ -140,10 +148,10 @@
 .dropdown::before {
   content: '';
   position: absolute;
-  top: -10px;
+  top: -16px;
   left: 0;
   right: 0;
-  height: 10px;
+  height: 16px;
 }
 
 .subItem {
@@ -183,7 +191,7 @@
 }
 .dropLink:hover,
 .dropLink[aria-expanded='true'] {
-  background: rgba(30, 58, 138, 0.07);
+  background: var(--bg);
   color: var(--navy);
 }
 .dropActivo {
@@ -198,7 +206,7 @@
   width: 44px;
   height: 44px;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 10px;
   background: #fff;
   color: var(--navy);
   cursor: pointer;
@@ -207,8 +215,8 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(11, 31, 58, 0.45);
-  z-index: 110;
+  background: rgba(15, 23, 42, 0.45);
+  z-index: var(--z-overlay);
 }
 
 .drawer {
@@ -217,7 +225,7 @@
   right: 0;
   bottom: 0;
   width: min(340px, 88vw);
-  z-index: 120;
+  z-index: calc(var(--z-overlay) + 1);
   background: #fff;
   box-shadow: var(--shadow-lg);
   overflow-y: auto;
@@ -263,12 +271,12 @@
   cursor: pointer;
 }
 .mLink:hover {
-  background: rgba(30, 58, 138, 0.05);
+  background: var(--bg);
 }
 .mActivo {
   color: var(--brand);
   font-weight: 600;
-  box-shadow: inset 3px 0 0 var(--brand-2);
+  box-shadow: inset 3px 0 0 var(--brand);
 }
 
 @media (max-width: 1080px) {
@@ -286,6 +294,6 @@
     display: grid;
   }
   .logo img {
-    height: 50px;
+    height: 42px;
   }
 }

@@ -18,7 +18,7 @@
 
 /* Frase clave (antes en rojo): resaltado sobrio con subrayado de marca */
 .resaltado {
-  background: linear-gradient(transparent 62%, rgba(30, 64, 175, 0.16) 62%);
+  background: linear-gradient(transparent 62%, rgba(3, 105, 161, 0.14) 62%);
   color: var(--navy);
   font-weight: 600;
   padding: 0 2px;
@@ -45,7 +45,7 @@
   padding: clamp(12px, 3vw, 32px);
   border-radius: var(--radius);
   background:
-    radial-gradient(60% 60% at 50% 45%, rgba(30, 64, 175, 0.08), transparent 70%);
+    radial-gradient(60% 60% at 50% 45%, rgba(3, 105, 161, 0.06), transparent 70%);
 }
 
 .ilustracion img {
@@ -62,15 +62,14 @@
   gap: 22px;
   padding: 24px 28px;
   border-radius: var(--radius);
-  background: var(--grad);
+  background: var(--navy);
   color: #fff;
   text-decoration: none;
   box-shadow: var(--shadow-lg);
-  transition: transform 0.3s var(--ease);
 }
 
-.destacado:hover {
-  transform: translateY(-2px);
+.destacado:hover .destacadoCta {
+  background: var(--brand-2);
 }
 
 .destacadoHex {
@@ -95,14 +94,15 @@
   display: block;
   margin-top: 4px;
   font-size: 0.97rem;
-  color: rgba(255, 255, 255, 0.82);
+  color: #cbd5e1;
 }
 
 .destacadoCta {
   padding: 10px 18px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-sm);
+  background: var(--brand);
   font-weight: 600;
+  transition: background-color var(--dur) ease-out;
   white-space: nowrap;
 }
 
@@ -123,16 +123,15 @@
   height: 100%;
   padding: 18px;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--radius);
   background: #fff;
   text-decoration: none;
-  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease), transform 0.25s var(--ease);
+  transition: border-color var(--dur) ease-out, box-shadow var(--dur) ease-out;
 }
 
 .otro:hover {
-  border-color: rgba(30, 58, 138, 0.35);
+  border-color: rgba(3, 105, 161, 0.4);
   box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
 }
 
 .otroIcono {
@@ -141,8 +140,8 @@
   place-items: center;
   width: 44px;
   height: 38px;
-  background: var(--grad);
-  color: #fff;
+  background: var(--brand-soft);
+  color: var(--brand);
 }
 
 .otro strong {

@@ -79,8 +79,8 @@ const Kri = () => {
       <svg viewBox={`0 0 ${W} ${H}`} className={styles.kriSvg} role="img" aria-label={`Tendencia del indicador; último valor ${ultimo}, umbral ${umbral}`}>
         <defs>
           <linearGradient id="kriArea" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#1e40af" stopOpacity="0.18" />
-            <stop offset="1" stopColor="#1e40af" stopOpacity="0" />
+            <stop offset="0" stopColor="#0369a1" stopOpacity="0.18" />
+            <stop offset="1" stopColor="#0369a1" stopOpacity="0" />
           </linearGradient>
         </defs>
         <line x1="0" x2={W} y1={yUmbral} y2={yUmbral} className={styles.kriUmbral} />

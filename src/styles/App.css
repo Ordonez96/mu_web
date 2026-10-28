@@ -1,24 +1,28 @@
 /* =========================================================
    MU Consulting · Sistema de diseño global
-   Basado en la guía visual de TAR (paleta bancaria sobria).
+   Estilo "Trust & Authority" (UI UX Pro Max): navy corporativo,
+   CTA azul sobrio, IBM Plex Sans, sin degradados decorativos.
+   Fuente de verdad: design-system/mu-consulting/MASTER.md
    ========================================================= */
 
 :root {
-  /* Paleta TAR */
-  --navy: #0b1f3a;
-  --brand: #1e3a8a;
-  --brand-2: #1e40af;
-  --navy-2: #1e3a5f;
-  --text: #334155;
-  --muted: #64748b;
-  --bg: #f3f5f8;
+  /* Paleta */
+  --navy: #0f172a; /* primario: títulos, superficies oscuras */
+  --navy-2: #1e293b;
+  --brand: #0369a1; /* CTA / acento interactivo */
+  --brand-2: #075985; /* hover del CTA */
+  --brand-soft: #e0f2fe;
+  --text: #1e293b;
+  --muted: #475569; /* slate-600: mínimo para 4.5:1 sobre blanco */
+  --bg: #f8fafc;
   --white: #ffffff;
-  --border: rgba(11, 31, 58, 0.08);
-  --border-strong: rgba(11, 31, 58, 0.16);
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --gold: #b45309; /* acento de credenciales (uso puntual) */
 
-  /* Degradado único de módulo (igual para todos) */
-  --grad: linear-gradient(135deg, #1e3a5f 0%, #0b1f3a 50%, #1e40af 100%);
-  --grad-text: linear-gradient(135deg, #0b1f3a 0%, #1e3a8a 60%, #1e40af 100%);
+  /* Superficies planas: los antiguos degradados quedan como color sólido */
+  --grad: linear-gradient(0deg, var(--navy), var(--navy));
+  --grad-text: linear-gradient(0deg, var(--navy), var(--navy));
 
   /* Semántica de riesgo (solo para niveles de riesgo) */
   --r-bajo: #0f9f8f;
@@ -26,21 +30,28 @@
   --r-alto: #e39a1c;
   --r-critico: #d63b55;
 
-  /* Curva única */
+  /* Movimiento: ease-out, 150-300 ms en micro-interacciones */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 200ms;
 
-  /* Tipografía */
-  --font-display: 'Chakra Petch', 'Segoe UI', sans-serif;
+  /* Tipografía: una sola familia (financiera, sobria) */
+  --font-display: 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif;
   --font-body: 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif;
 
-  /* Sombras */
-  --shadow-sm: 0 1px 2px rgba(11, 31, 58, 0.06), 0 2px 8px rgba(11, 31, 58, 0.05);
-  --shadow-md: 0 10px 30px -12px rgba(11, 31, 58, 0.22);
-  --shadow-lg: 0 24px 60px -24px rgba(11, 31, 58, 0.35);
+  /* Sombras sutiles */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 20px 40px -20px rgba(15, 23, 42, 0.25);
 
-  --nav-h: 72px;
-  --radius: 20px;
-  --radius-sm: 12px;
+  /* Escala de z-index */
+  --z-base: 1;
+  --z-dropdown: 20;
+  --z-nav: 30;
+  --z-overlay: 50;
+
+  --nav-h: 88px; /* barra de 64px + 12px de aire arriba y abajo */
+  --radius: 16px;
+  --radius-sm: 10px;
 }
 
 *,
@@ -78,19 +89,16 @@ body {
   min-height: 100vh;
 }
 
-/* Panal global: fijo detrás de todo, acompaña el scroll de arriba abajo */
+/* Fondo global: plano y luminoso; el panal (canvas) queda como textura muy sutil */
 .mu-fondo {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background:
-    radial-gradient(42% 50% at 0% 0%, rgba(30, 64, 175, 0.08), transparent 70%),
-    radial-gradient(40% 50% at 100% 100%, rgba(30, 58, 138, 0.07), transparent 70%),
-    linear-gradient(180deg, #ffffff 0%, #f3f5f8 100%);
+  background: linear-gradient(180deg, #ffffff 0%, var(--bg) 60%);
 }
 
-/* Trama hexagonal estática para las franjas marinas (continuidad del panal) */
+/* Trama hexagonal estática para las franjas oscuras (continuidad de marca) */
 .mu-trama {
   position: relative;
   isolation: isolate;
@@ -100,7 +108,7 @@ body {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='78' height='90' viewBox='0 0 78 90'%3E%3Cpath d='M39 1 77 23v44L39 89 1 67V23z' fill='none' stroke='%23fff' stroke-opacity='.06'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='78' height='90' viewBox='0 0 78 90'%3E%3Cpath d='M39 1 77 23v44L39 89 1 67V23z' fill='none' stroke='%23fff' stroke-opacity='.05'/%3E%3C/svg%3E");
   background-size: 52px 60px;
   pointer-events: none;
 }
@@ -116,6 +124,11 @@ img {
 
 a {
   color: inherit;
+}
+
+::selection {
+  background: var(--brand-soft);
+  color: var(--navy);
 }
 
 /* ---------- Primitivas compartidas (prefijo mu-) ---------- */
@@ -135,94 +148,92 @@ a {
 }
 
 .mu-section--alt {
-  /* Translúcida: el panal global se ve a través */
-  background: rgba(243, 245, 248, 0.55);
+  background: var(--bg);
   border-block: 1px solid var(--border);
 }
 
-/* Título de sección: degradado marino */
+/* Título de sección: sólido, frase (no mayúsculas), tracking ajustado */
 .mu-title {
   margin: 0 0 14px;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
-  line-height: 1.12;
-  letter-spacing: -0.005em;
-  background: var(--grad-text);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--navy);
   max-width: 26ch;
   text-wrap: balance;
 }
 
-/* Barra de acento 56×3 bajo encabezados */
+/* Barra de acento bajo encabezados */
 .mu-accent {
   display: block;
-  width: 56px;
+  width: 40px;
   height: 3px;
   border-radius: 3px;
-  background: var(--grad);
+  background: var(--brand);
   margin: 0 0 22px;
 }
 
 .mu-lead {
   margin: 0 0 40px;
   color: var(--muted);
-  font-size: 1.08rem;
+  font-size: 1.1rem;
+  line-height: 1.7;
   max-width: 64ch;
 }
 
-/* Chip de marca */
+/* Eyebrow / etiqueta de sección */
 .mu-chip {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
-  font-size: 0.85rem;
+  background: var(--brand-soft);
+  border: 1px solid rgba(3, 105, 161, 0.18);
+  font-size: 0.8rem;
   font-weight: 600;
-  color: var(--navy);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--brand-2);
 }
 
 .mu-chip::before {
   content: '';
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--grad);
+  background: var(--brand);
 }
 
-/* Botones */
+/* Botones: cambian color/sombra al hover, sin desplazar el layout */
 .mu-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   min-height: 48px;
-  padding: 0 26px;
-  border-radius: 12px;
+  padding: 0 24px;
+  border-radius: var(--radius-sm);
   border: 0;
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 1rem;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background-color 0.2s ease;
+  transition: background-color var(--dur) ease-out, box-shadow var(--dur) ease-out, color var(--dur) ease-out;
 }
 
 .mu-btn--primary {
-  background: var(--grad);
+  background: var(--brand);
   color: #fff;
-  box-shadow: 0 8px 20px -10px rgba(30, 58, 138, 0.8);
+  box-shadow: var(--shadow-sm);
 }
 
 .mu-btn--primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px -12px rgba(30, 58, 138, 0.9);
+  background: var(--brand-2);
+  box-shadow: var(--shadow-md);
 }
 
 .mu-btn--ghost {
@@ -232,8 +243,8 @@ a {
 }
 
 .mu-btn--ghost:hover {
-  transform: translateY(-2px);
-  box-shadow: inset 0 0 0 1px var(--brand), var(--shadow-sm);
+  color: var(--brand-2);
+  box-shadow: inset 0 0 0 1px var(--brand);
 }
 
 .mu-btn--light {
@@ -242,8 +253,22 @@ a {
 }
 
 .mu-btn--light:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px -14px rgba(0, 0, 0, 0.5);
+  background: var(--brand-soft);
+}
+
+/* Tarjeta base */
+.mu-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur) ease-out, box-shadow var(--dur) ease-out;
+}
+
+a.mu-card:hover,
+.mu-card--hover:hover {
+  border-color: rgba(3, 105, 161, 0.4);
+  box-shadow: var(--shadow-md);
 }
 
 /* Hexágono horizontal reutilizable (íconos, viñetas) */
@@ -274,12 +299,12 @@ a {
 
 /* Anclas: que el navbar fijo no tape el título al saltar */
 [id] {
-  scroll-margin-top: calc(var(--nav-h) + 16px);
+  scroll-margin-top: calc(var(--nav-h) + 24px);
 }
 
 /* Foco visible accesible y consistente */
 :focus-visible {
-  outline: 2px solid var(--brand-2);
+  outline: 2px solid var(--brand);
   outline-offset: 3px;
 }
 

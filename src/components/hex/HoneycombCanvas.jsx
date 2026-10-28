@@ -90,7 +90,7 @@ const HoneycombCanvas = forwardRef(function HoneycombCanvas(_, ref) {
       bctx.clearRect(0, 0, w, h);
       bctx.beginPath();
       celdas.forEach((cel) => trazarHex(bctx, cel.x, cel.y, R - 1.5));
-      bctx.strokeStyle = 'rgba(11, 31, 58, 0.055)';
+      bctx.strokeStyle = 'rgba(15, 23, 42, 0.04)';
       bctx.lineWidth = 1;
       bctx.stroke();
       pintar(performance.now(), true);
@@ -116,8 +116,8 @@ const HoneycombCanvas = forwardRef(function HoneycombCanvas(_, ref) {
       // Spotlight suave bajo el puntero
       if (mouse.activo) {
         const g = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, RADIO_SPOT * 1.4);
-        g.addColorStop(0, 'rgba(30, 64, 175, 0.07)');
-        g.addColorStop(1, 'rgba(30, 64, 175, 0)');
+        g.addColorStop(0, 'rgba(3, 105, 161, 0.05)');
+        g.addColorStop(1, 'rgba(3, 105, 161, 0)');
         ctx.fillStyle = g;
         ctx.fillRect(mouse.x - RADIO_SPOT * 1.4, mouse.y - RADIO_SPOT * 1.4, RADIO_SPOT * 2.8, RADIO_SPOT * 2.8);
       }
@@ -161,9 +161,9 @@ const HoneycombCanvas = forwardRef(function HoneycombCanvas(_, ref) {
         const c = encendidas[i];
         ctx.beginPath();
         trazarHex(ctx, c.x, c.y, R - 1.5);
-        ctx.fillStyle = `rgba(30, 58, 138, ${(c.v * 0.12).toFixed(3)})`;
+        ctx.fillStyle = `rgba(3, 105, 161, ${(c.v * 0.08).toFixed(3)})`;
         ctx.fill();
-        ctx.strokeStyle = `rgba(30, 64, 175, ${(c.v * 0.45).toFixed(3)})`;
+        ctx.strokeStyle = `rgba(3, 105, 161, ${(c.v * 0.3).toFixed(3)})`;
         ctx.stroke();
       }
       return hayActividad;

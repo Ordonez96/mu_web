@@ -1,7 +1,13 @@
-import { Link } from 'react-router-dom';
-import logoLight from '../img/logo/Logo-completo-light.png';
-import { SERVICIOS, PRODUCTO_TAR, CONTACTOS, DIRECCION, soloDigitos } from '../config/siteData';
-import styles from './Footer.module.css';
+import { Link } from "react-router-dom";
+import logoLight from "../img/logo/Logo-completo-light.png";
+import {
+  SERVICIOS,
+  PRODUCTO_TAR,
+  CONTACTOS,
+  DIRECCION,
+  soloDigitos,
+} from "../config/siteData";
+import styles from "./Footer.module.css";
 
 const ANIO = new Date().getFullYear();
 
@@ -16,8 +22,8 @@ const Footer = () => {
             <img src={logoLight} alt="MU Consulting" width="170" height="70" />
           </Link>
           <p>
-            Especialistas en administración de riesgos. Asesoría global y tecnología de alto desempeño
-            para instituciones financieras.
+            Especialistas en administración de riesgos. Asesoría global y
+            tecnología de alto desempeño para instituciones financieras.
           </p>
         </div>
 
@@ -37,21 +43,29 @@ const Footer = () => {
         <nav aria-label="Empresa">
           <h2 className={styles.h}>Empresa</h2>
           <ul>
-            <li><Link to={PRODUCTO_TAR.ruta}>Software TAR</Link></li>
-            <li><Link to="/about">Sobre nosotros</Link></li>
-            <li><Link to="/contact">Contacto</Link></li>
+            <li>
+              <Link to={PRODUCTO_TAR.ruta}>Software TAR</Link>
+            </li>
+            <li>
+              <Link to="/about">Sobre nosotros</Link>
+            </li>
+            <li>
+              <Link to="/contact">Contacto</Link>
+            </li>
           </ul>
         </nav>
 
         <address className={styles.contacto}>
           <h2 className={styles.h}>Contacto</h2>
-          <a href={`tel:+${soloDigitos(principal.phone)}`}>{principal.phone}</a>
+          <a href={`tel:+${soloDigitos(principal.whatsapp)}`}>
+            {principal.whatsapp}
+          </a>
           <a href={`mailto:${principal.email}`}>{principal.email}</a>
-          <span>
+          {/* <span>
             {DIRECCION.lugar}, {DIRECCION.linea1}
             <br />
             {DIRECCION.linea2}
-          </span>
+          </span> */}
         </address>
       </div>
 

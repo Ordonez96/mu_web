@@ -3,6 +3,7 @@ import WhatsApp from "@mui/icons-material/WhatsApp";
 import EmailOutlined from "@mui/icons-material/EmailOutlined";
 import LocationOnOutlined from "@mui/icons-material/LocationOnOutlined";
 import PageHeader from "./ui/PageHeader";
+import Revelar from "./ui/Revelar";
 import logoIcon from "../img/logo/Logo-icon.png";
 import { CONTACTOS, DIRECCION, soloDigitos } from "../config/siteData";
 import { useDocumentTitle } from "./useDocumentTittle";
@@ -27,8 +28,13 @@ const Fila = ({ icon: Icon, href, children, externo }) => (
   </li>
 );
 
-const TarjetaContacto = ({ persona }) => (
-  <article className={styles.card}>
+const TarjetaContacto = ({ persona, index }) => (
+  <Revelar
+    as="article"
+    className={styles.card}
+    desde={index % 2 === 0 ? "izquierda" : "derecha"}
+    retraso={0.2 + index * 0.12}
+  >
     <div className={styles.cardTop}>
       <img src={logoIcon} alt="" width="64" height="64" />
       <div>
@@ -51,7 +57,7 @@ const TarjetaContacto = ({ persona }) => (
         {persona.email}
       </Fila>
     </ul>
-  </article>
+  </Revelar>
 );
 
 const Contact = () => {
@@ -64,8 +70,8 @@ const Contact = () => {
         subtitulo="Escríbenos o llámanos: te respondemos con una propuesta de trabajo para tu organización."
       >
         <div className={styles.cards}>
-          {CONTACTOS.map((p) => (
-            <TarjetaContacto key={p.email} persona={p} />
+          {CONTACTOS.map((p, i) => (
+            <TarjetaContacto key={p.email} persona={p} index={i} />
           ))}
         </div>
       </PageHeader>

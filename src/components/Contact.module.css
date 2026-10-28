@@ -93,6 +93,18 @@
   font-size: 1.15rem;
 }
 
+/* Giro hexagonal al hover (mismo gesto que el núcleo MU); el ícono queda derecho */
+.filaIcono,
+.filaIcono svg {
+  transition: transform 0.6s var(--ease);
+}
+.filas li:hover .filaIcono {
+  transform: rotate(60deg);
+}
+.filas li:hover .filaIcono svg {
+  transform: rotate(-60deg);
+}
+
 .ubicacion {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);

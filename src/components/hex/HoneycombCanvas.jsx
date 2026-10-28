@@ -200,7 +200,17 @@ const HoneycombCanvas = forwardRef(function HoneycombCanvas(_, ref) {
     const onScroll = () => {
       rect = canvas.getBoundingClientRect();
     };
-    const onVis = () => (document.hidden ? cancelAnimationFrame(raf) : despertar());
+    // Pestaña oculta: se detiene (ahorro). Hay que limpiar raf; si queda el id cancelado,
+    // despertar() cree que el bucle sigue vivo y la animación no vuelve al regresar.
+    const onVis = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      } else {
+        rect = canvas.getBoundingClientRect();
+        despertar();
+      }
+    };
 
     const ro = new ResizeObserver(construir);
     ro.observe(canvas);

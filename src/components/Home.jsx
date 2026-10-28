@@ -36,7 +36,7 @@ const Home = () => {
     <>
       <PageHeader
         titulo="Especialistas en administración de riesgos"
-        subtitulo="Proveemos asesoramiento global y tecnología de alto desempeño. Pasa el cursor por cada hexágono para conocer nuestros servicios."
+        subtitulo="Proveemos asesoramiento global y tecnología de alto desempeño. Explora cada hexágono para conocer nuestros servicios."
       >
         <HexFlower
           items={PETALOS}

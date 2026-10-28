@@ -375,13 +375,13 @@ const HexFlower = ({
 
   return (
     <div className={`${styles.fila} ${forzarMd ? styles.filaForzada : ''}`}>
-      {/* Columna de hexágonos */}
-      <div
-        ref={columnaRef}
-        className={styles.columnaHex}
-        style={esMd ? { height: altoFila } : undefined}
-      >
-        {esMd ? (
+      {/* Columna de hexágonos (solo escritorio: en móvil los accesos rápidos ya cubren la navegación) */}
+      {esMd && (
+        <div
+          ref={columnaRef}
+          className={styles.columnaHex}
+          style={{ height: altoFila }}
+        >
           <div
             className={styles.escenario}
             style={{ width: panal.ancho, height: panal.alto, transform: `translate(-50%, -50%) scale(${escala})` }}
@@ -402,25 +402,8 @@ const HexFlower = ({
               />
             ))}
           </div>
-        ) : (
-          <div className={styles.pila}>
-            {items.map((it, i) => (
-              <HexagonoServicio
-                key={it.id}
-                item={it}
-                index={i}
-                movil
-                activo={visualActivo === it.id}
-                atenuado={false}
-                onEnter={onEnter}
-                onLeave={onLeave}
-                onActivar={onActivar}
-                registrar={registrar}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Panel derecho */}
       <motion.aside

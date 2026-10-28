@@ -374,13 +374,14 @@
   right: -24px;
   bottom: -28px;
   color: var(--navy);
-  opacity: 0.05;
   pointer-events: none;
   z-index: 0;
 }
+/* La opacidad va en el svg: framer-motion anima la opacidad del contenedor (0 → 1) */
 .marca svg {
   font-size: 200px;
   display: block;
+  opacity: 0.05;
 }
 
 .panelAnim {
@@ -554,13 +555,6 @@
 }
 
 /* ---------- Móvil (< md) ---------- */
-.pila {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 8px 0 16px;
-}
-
 @media (min-width: 600px) {
   .hexMovil {
     width: 300px;

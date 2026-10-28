@@ -81,6 +81,18 @@
   color: #fff;
   font-family: var(--font-display);
   font-weight: 700;
+  transition: transform 0.6s var(--ease);
+}
+
+/* Giro hexagonal al hover (como el núcleo MU); el número gira al revés y queda derecho */
+.pasoNum > span {
+  transition: transform 0.6s var(--ease);
+}
+.paso:hover .pasoNum {
+  transform: rotate(60deg);
+}
+.paso:hover .pasoNum > span {
+  transform: rotate(-60deg);
 }
 
 .paso h3 {

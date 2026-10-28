@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import PageHeader from '../ui/PageHeader';
 import CtaBand from '../ui/CtaBand';
 import HexList from '../ui/HexList';
+import Revelar from '../ui/Revelar';
 import { getIcon } from '../ui/icons';
 import { SERVICIOS } from '../../config/siteData';
 import { useDocumentTitle } from '../useDocumentTittle';
@@ -23,7 +24,8 @@ const Texto = ({ children }) =>
 const Seccion = ({ s, invertida, alt }) => (
   <section className={`mu-section ${alt ? 'mu-section--alt' : ''}`}>
     <div className={`mu-container ${styles.split} ${invertida ? styles.invertida : ''}`}>
-      <div className={styles.texto}>
+      {/* Texto e imagen entran desde lados opuestos, siguiendo la alternancia del layout */}
+      <Revelar className={styles.texto} desde={invertida ? 'derecha' : 'izquierda'}>
         <h2 className="mu-title">{s.titulo}</h2>
         <span className="mu-accent" />
         {(s.parrafos || []).map((p) => (
@@ -37,17 +39,17 @@ const Seccion = ({ s, invertida, alt }) => (
             <HexList items={l.items} />
           </div>
         ))}
-      </div>
+      </Revelar>
 
       {s.imagen &&
         (s.imagen.tipo === 'diagrama' ? (
-          <figure className={`mu-figure ${styles.media}`}>
+          <Revelar as="figure" className={`mu-figure ${styles.media}`} desde={invertida ? 'izquierda' : 'derecha'} retraso={0.12}>
             <img src={s.imagen.src} alt={s.imagen.alt} width={s.imagen.w} height={s.imagen.h} loading="lazy" decoding="async" />
-          </figure>
+          </Revelar>
         ) : (
-          <div className={`${styles.media} ${styles.ilustracion}`}>
+          <Revelar className={`${styles.media} ${styles.ilustracion}`} desde="zoom" retraso={0.12}>
             <img src={s.imagen.src} alt={s.imagen.alt} width={s.imagen.w} height={s.imagen.h} loading="lazy" decoding="async" />
-          </div>
+          </Revelar>
         ))}
     </div>
   </section>
@@ -57,13 +59,15 @@ const Seccion = ({ s, invertida, alt }) => (
 const OtrosServicios = ({ actual }) => (
   <section className="mu-section">
     <div className="mu-container">
-      <h2 className="mu-title">Otros servicios</h2>
-      <span className="mu-accent" />
+      <Revelar>
+        <h2 className="mu-title">Otros servicios</h2>
+        <span className="mu-accent" />
+      </Revelar>
       <ul className={styles.otros}>
-        {SERVICIOS.filter((s) => s.ruta !== actual).map((s) => {
+        {SERVICIOS.filter((s) => s.ruta !== actual).map((s, i) => {
           const Icon = getIcon(s.icon);
           return (
-            <li key={s.id}>
+            <Revelar as="li" key={s.id} retraso={0.1 + i * 0.1}>
               <Link to={s.ruta} className={styles.otro}>
                 <span className={`${styles.otroIcono} mu-hex`} aria-hidden="true">
                   <Icon />
@@ -73,7 +77,7 @@ const OtrosServicios = ({ actual }) => (
                   <small>{s.resumen}</small>
                 </span>
               </Link>
-            </li>
+            </Revelar>
           );
         })}
       </ul>
@@ -99,7 +103,7 @@ const ServicePage = ({ contenido }) => {
 
       {destacado && (
         <section className="mu-section" style={{ paddingBottom: 0 }}>
-          <div className="mu-container">
+          <Revelar className="mu-container" desde="zoom">
             <Link to={destacado.ruta} className={styles.destacado}>
               <span className={`${styles.destacadoHex} mu-hex`} aria-hidden="true">
                 TAR
@@ -110,7 +114,7 @@ const ServicePage = ({ contenido }) => {
               </span>
               <span className={styles.destacadoCta}>{destacado.label}</span>
             </Link>
-          </div>
+          </Revelar>
         </section>
       )}
 

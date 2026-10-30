@@ -6,7 +6,8 @@ import TarMockup from "./TarMockup";
 import ModuleStory from "./ModuleStory";
 import RoBento from "./RoBento";
 import CicloRO from "./CicloRO";
-import { HERO, MODULOS_TAR, PLATAFORMA, FAQ } from "./muTarContent";
+import ArmaTuTar from "./ArmaTuTar";
+import { HERO, MODULOS_VENTA, PLATAFORMA, FAQ } from "./muTarContent";
 import hexStyles from "../../hex/Hex.module.css";
 import styles from "./MuTar.module.css";
 
@@ -49,12 +50,12 @@ const MuTar = () => {
               <Link to="/contact" className="mu-btn mu-btn--primary">
                 Solicitar demostración
               </Link>
-              <a href="#riesgo-operativo" className="mu-btn mu-btn--ghost">
-                Ver riesgo operativo
+              <a href="#modulos" className="mu-btn mu-btn--ghost">
+                Elegir módulos
               </a>
             </div>
             <ul className={styles.heroModulos} aria-label="Módulos de TAR">
-              {MODULOS_TAR.filter((m) => m.id !== "lv_custom").map((m) => {
+              {MODULOS_VENTA.map((m) => {
                 const Icon = getIcon(m.icon);
                 return (
                   <li key={m.id}>
@@ -77,6 +78,9 @@ const MuTar = () => {
 
       {/* ================= RECORRIDO DE MÓDULOS ================= */}
       <ModuleStory />
+
+      {/* ================= VENTA MODULAR ================= */}
+      <ArmaTuTar />
 
       {/* ================= RIESGO OPERATIVO EN DETALLE ================= */}
       {/* <section
@@ -175,8 +179,8 @@ const MuTar = () => {
             Ve TAR funcionando con los riesgos de tu entidad
           </h2>
           <p>
-            Agenda una demostración: te mostramos riesgo operativo, crédito,
-            liquidez y LA-FT con información de tu institución.
+            Agenda una demostración de la suite completa o solo de los
+            módulos que te interesan, con información de tu institución.
           </p>
           <div className={styles.heroAcciones}>
             <Link to="/contact" className="mu-btn mu-btn--light">

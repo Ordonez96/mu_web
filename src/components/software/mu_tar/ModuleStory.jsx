@@ -2,12 +2,12 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { HexNucleo, HexagonoServicio, calcularPanal, UI } from '../../hex/HexFlower';
 import { getIcon } from '../../ui/icons';
-import { MODULOS_TAR } from './muTarContent';
+import { MODULOS_VENTA } from './muTarContent';
 import hexStyles from '../../hex/Hex.module.css';
 import styles from './MuTar.module.css';
 
 const MD = '(min-width: 900px)';
-const N = MODULOS_TAR.length;
+const N = MODULOS_VENTA.length;
 const noop = () => {};
 const dos = (n) => String(n).padStart(2, '0');
 
@@ -60,7 +60,7 @@ const HistoriaEscritorio = () => {
     };
   }, [panal]);
 
-  const indice = useCallback((item) => MODULOS_TAR.findIndex((m) => m.id === item.id), []);
+  const indice = useCallback((item) => MODULOS_VENTA.findIndex((m) => m.id === item.id), []);
 
   // Hover: muestra el módulo; clic: lo deja fijo y detiene el recorrido
   const onEnter = useCallback((item) => setActivo(indice(item)), [indice]);
@@ -72,7 +72,7 @@ const HistoriaEscritorio = () => {
     [indice]
   );
 
-  const modulo = MODULOS_TAR[activo];
+  const modulo = MODULOS_VENTA[activo];
 
   return (
     <section
@@ -93,7 +93,7 @@ const HistoriaEscritorio = () => {
             }}
           >
             <HexNucleo pos={panal.nucleo} titulo="TAR" subtitulo="MU CONSULTING" foco />
-            {MODULOS_TAR.map((m, i) => (
+            {MODULOS_VENTA.map((m, i) => (
               <HexagonoServicio
                 key={m.id}
                 item={m}
@@ -111,7 +111,7 @@ const HistoriaEscritorio = () => {
         </div>
 
         <div className={styles.historiaTexto}>
-          <h2 id="historia-titulo" className="mu-title">Un sistema, todos tus riesgos</h2>
+          <h2 id="historia-titulo" className="mu-title">Seis módulos, un solo sistema</h2>
           <span className="mu-accent" />
 
           <div className={styles.historiaPanel} aria-live="polite">
@@ -138,7 +138,7 @@ const HistoriaEscritorio = () => {
             style={{ '--intervalo': `${INTERVALO}ms` }}
             aria-label="Módulos"
           >
-            {MODULOS_TAR.map((m, i) => (
+            {MODULOS_VENTA.map((m, i) => (
               <li
                 key={m.id}
                 className={i === activo ? styles.indiceActivo : i < activo ? styles.indiceHecho : undefined}
@@ -166,10 +166,10 @@ const HistoriaEscritorio = () => {
 const HistoriaMovil = () => (
   <section className="mu-section" aria-labelledby="historia-titulo">
     <div className="mu-container">
-      <h2 id="historia-titulo" className="mu-title">Un sistema, todos tus riesgos</h2>
+      <h2 id="historia-titulo" className="mu-title">Seis módulos, un solo sistema</h2>
       <span className="mu-accent" />
       <ol className={styles.historiaLista}>
-        {MODULOS_TAR.map((m, i) => {
+        {MODULOS_VENTA.map((m, i) => {
           const Icon = getIcon(m.icon);
           return (
             <li key={m.id}>

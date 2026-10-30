@@ -7,10 +7,151 @@
 
 export const HERO = {
   chip: "Software TAR",
-  palabras: ["El", "riesgo", "operativo,", "bajo", "control."],
+  palabras: ["Tus", "riesgos,", "bajo", "control."],
   subtitulo:
-    "TAR es el Sistema de Administración de Riesgos de MU Consulting: riesgo operativo, crédito, liquidez y prevención de LA-FT en una sola plataforma web.",
+    "TAR es el Sistema de Administración de Riesgos de MU Consulting: seis módulos en una sola plataforma web. Adquiere la suite completa o solo los módulos que tu entidad necesita.",
 };
+
+/* ---------- Módulos comerciales: se venden juntos o por separado ----------
+ * Funcionalidades tomadas de las pantallas reales de TAR (repo mu_tar).
+ * `etiqueta` = marco o método de referencia; `incluye` = lo que trae el módulo.
+ */
+export const MODULOS_VENTA = [
+  {
+    id: "ro",
+    icon: "ro",
+    titulo: "RIESGO OPERATIVO",
+    descripcion: "AMA · Scorecard",
+    textoTitulo: "Riesgo operativo",
+    etiqueta: "Enfoque AMA",
+    resumen:
+      "Identifica, mide, controla y mitiga el riesgo operativo en todos los procesos de la entidad.",
+    parrafos: [
+      "Matriz RO bajo el enfoque AMA: del evento al riesgo inherente, los mitigadores, el riesgo residual y el plan de acción.",
+      "Incluye AMA-Lite con juicio experto (Delphi) y scorecards de gestión para comité y junta.",
+    ],
+    incluye: [
+      "Matriz RO-AMA: evento, impacto, riesgo inherente, mitigadores y riesgo residual",
+      "Plan de acción y monitoreo de cada riesgo",
+      "AMA-Lite con técnica Delphi y resumen residual por categoría",
+      "Scorecards: RO global, cumplimiento, información gerencial y planificación",
+      "Catálogos de organización, procesos, productos y eventos de pérdida",
+    ],
+  },
+  {
+    id: "credito",
+    icon: "rc",
+    titulo: "RIESGO DE CRÉDITO",
+    descripcion: "NCB 022 · LOGIT",
+    textoTitulo: "Riesgo de crédito",
+    etiqueta: "NCB 022 · LOGIT",
+    resumen:
+      "Calificación de deudores, reservas de saneamiento y modelo de pérdida esperada de la cartera.",
+    parrafos: [
+      "Aplica la Norma NCB 022 para clasificar a los deudores y calcular las reservas mínimas requeridas.",
+      "Estima la pérdida esperada con matriz de transición y método LOGIT de probabilidad de incumplimiento.",
+    ],
+    incluye: [
+      "Carga y validación automática de la cartera",
+      "Calificación de deudores y reservas de saneamiento según NCB 022",
+      "Comparativa entre reservas normativas y política interna",
+      "Destino del crédito por actividad económica, sector y división",
+      "Pérdida esperada: matriz de transición, regresión logística (LOGIT) y dashboard",
+    ],
+  },
+  {
+    id: "liquidez",
+    icon: "rl",
+    titulo: "RIESGO DE LIQUIDEZ",
+    descripcion: "VaR · Backtesting",
+    textoTitulo: "Riesgo de liquidez",
+    etiqueta: "VaR · Backtesting",
+    resumen:
+      "Control de saldos diarios y cuantificación del riesgo de liquidez con Valor en Riesgo.",
+    parrafos: [
+      "Registra los saldos diarios y los activos disponibles para monitorear la posición de liquidez.",
+      "Calcula el VaR al 95 % y 99 % y lo valida contra los resultados reales con backtesting.",
+    ],
+    incluye: [
+      "Saldos diarios y activos disponibles de la institución",
+      "VaR 95 % y 99 %, diversificado y no diversificado",
+      "Volatilidad por tipo de depósito: cuentas de ahorro y ahorro restringido",
+      "Consulta de históricos de VaR y rendimientos",
+      "Backtesting del modelo y catálogo de cuentas contables",
+    ],
+  },
+  {
+    id: "laft",
+    icon: "laft",
+    titulo: "LAVADO DE DINERO",
+    descripcion: "LA-FT · Custom",
+    textoTitulo: "Lavado de dinero LA-FT",
+    etiqueta: "Estándar o Custom",
+    resumen:
+      "Matriz de riesgos de lavado de activos y financiamiento del terrorismo, estándar o adaptada a tu metodología.",
+    parrafos: [
+      "Evalúa los riesgos de LA/FT de la entidad, sus controles y el riesgo residual resultante.",
+      "Disponible en versión estándar o CUSTOM, configurada con la metodología propia de tu institución.",
+    ],
+    incluye: [
+      "Matriz LA/FT: evento, riesgo inherente, mitigadores, residual y plan de acción",
+      "Políticas y escalas de calificación configurables",
+      "Seguimiento con mapa de riesgos y promedios por periodo",
+      "Versión CUSTOM: tablero de control, riesgos adoptados y evaluación de controles",
+      "Plan de solución, análisis final imprimible y dashboard de gráficas",
+    ],
+  },
+  {
+    id: "tecnologico",
+    icon: "tecnologico",
+    titulo: "RO TECNOLÓGICO",
+    descripcion: "Matriz tecnológica",
+    textoTitulo: "RO tecnológico",
+    etiqueta: "Seguridad de la información",
+    resumen:
+      "Riesgos de sistemas de información, infraestructura tecnológica y ciberseguridad.",
+    parrafos: [
+      "Identifica, evalúa y cuantifica fallas de sistemas, interrupciones del servicio, accesos no autorizados y vulnerabilidades.",
+      "Fortalece la continuidad del negocio y el cumplimiento normativo en seguridad de la información.",
+    ],
+    incluye: [
+      "Matriz de riesgo tecnológico por probabilidad e impacto",
+      "Políticas: escalas de probabilidad, impacto y calificación",
+      "Evaluación de controles y mitigadores (automatización y frecuencia)",
+      "Seguimiento de planes de acción y evolución del riesgo por periodo",
+      "Mapa de riesgos y gráficos de la matriz",
+    ],
+  },
+  {
+    id: "legal",
+    icon: "legal",
+    titulo: "RO LEGAL",
+    descripcion: "Matriz legal",
+    textoTitulo: "RO legal",
+    etiqueta: "Cumplimiento normativo",
+    resumen:
+      "Riesgos por incumplimiento de leyes, normativas y contratos, y por procesos judiciales o administrativos.",
+    parrafos: [
+      "Anticipa sanciones regulatorias, contratos deficientes, litigios y cambios normativos no atendidos a tiempo.",
+      "Protege el patrimonio y la reputación de la entidad con trazabilidad de cada plan de acción.",
+    ],
+    incluye: [
+      "Matriz de riesgo legal por probabilidad e impacto",
+      "Políticas: escalas de probabilidad, impacto y calificación",
+      "Evaluación de controles y mitigadores",
+      "Seguimiento de planes de acción y evolución del riesgo por periodo",
+      "Mapa de riesgos y gráficos de la matriz",
+    ],
+  },
+];
+
+/* Lo que trae cualquier modalidad, sea suite o un solo módulo */
+export const INCLUIDO_SIEMPRE = [
+  "Implementación y capacitación",
+  "Manuales de usuario en PDF",
+  "Usuarios con permisos por módulo",
+  "100 % web",
+];
 
 /* ---------- Módulos reales del Home de TAR (mismo orden) ---------- */
 export const MODULOS_TAR = [
@@ -210,8 +351,16 @@ export const PLATAFORMA = [
 
 export const FAQ = [
   {
-    q: "¿Puedo contratar solo el módulo de riesgo operativo?",
-    a: "Conversemos tu necesidad. TAR está organizado por módulos y cada usuario accede solo a los que tiene habilitados.",
+    q: "¿Tengo que comprar todo el sistema?",
+    a: "No. Puedes adquirir la suite completa con los seis módulos o solo los que tu entidad necesita, por ejemplo únicamente riesgo operativo o LA-FT.",
+  },
+  {
+    q: "¿Puedo empezar con un módulo y agregar otros después?",
+    a: "Sí. Todos los módulos comparten la misma plataforma, así que puedes ampliar tu licencia más adelante sin migrar información ni cambiar de sistema.",
+  },
+  {
+    q: "¿RO tecnológico y RO legal requieren el módulo de riesgo operativo?",
+    a: "No. Cada uno tiene su propia matriz, políticas y seguimiento, y se pueden adquirir por separado.",
   },
   {
     q: "¿Se adapta a la metodología de mi entidad?",

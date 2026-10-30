@@ -276,6 +276,13 @@
   background: var(--grad);
 }
 
+/* En pantallas táctiles no hay "pasar el cursor" */
+@media (hover: none) {
+  .heroPista {
+    display: none;
+  }
+}
+
 .heroPista {
   margin: 16px 0 0;
   text-align: center;
@@ -390,42 +397,10 @@
 }
 
 /* Móvil */
-.historiaLista {
-  display: grid;
-  gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
 
-.historiaLista li {
-  padding: 22px;
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  background: #fff;
-}
 
-.historiaLista h3 {
-  margin: 0 0 8px;
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  color: var(--navy);
-}
 
-.historiaLista p {
-  margin: 0 0 8px;
-  font-size: 0.97rem;
-}
 
-.historiaListaIcono {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 42px;
-  margin-bottom: 12px;
-  background: var(--grad);
-  color: #fff;
-}
 
 /* ======================= BENTO RO ======================= */
 .bentoGrid {
@@ -751,83 +726,6 @@
 [data-visible='true'] .barra span,
 [data-visible='true'] .planPista span {
   transform: none;
-}
-
-/* ======================= CICLO ======================= */
-.ciclo {
-  position: relative;
-  margin-top: 12px;
-}
-
-.cicloTrazo {
-  position: absolute;
-  top: 18px;
-  left: 0;
-  width: 100%;
-  height: 20px;
-  overflow: visible;
-}
-
-.cicloBase,
-.cicloProgreso {
-  stroke-linecap: round;
-}
-
-.cicloBase {
-  stroke: rgba(11, 31, 58, 0.1);
-  stroke-width: 2;
-}
-
-.cicloProgreso {
-  stroke: var(--brand-2);
-  stroke-width: 3;
-  /* pathLength=1: trazo de 1 + hueco de 1 → solo se ve la parte recorrida */
-  stroke-dasharray: 1 1;
-  stroke-dashoffset: calc(1 - var(--p, 0));
-}
-
-.cicloPasos {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.cicloPaso {
-  /* t: cuánto se ha encendido este paso según el scroll */
-  --t: clamp(0, calc(var(--p, 0) * (var(--n) - 1) - var(--i) + 1), 1);
-  opacity: calc(0.35 + var(--t) * 0.65);
-}
-
-.cicloNodo {
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 56px;
-  margin-bottom: 18px;
-  background: var(--grad);
-  color: #fff;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.05rem;
-  transform: scale(calc(0.82 + var(--t) * 0.18));
-}
-
-.cicloPaso h3 {
-  margin: 0 0 6px;
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  color: var(--navy);
-}
-
-.cicloPaso p {
-  margin: 0;
-  color: var(--text);
-  font-size: 0.97rem;
-  max-width: 30ch;
 }
 
 /* ======================= PLATAFORMA ======================= */
@@ -1250,27 +1148,6 @@
   .bentoSub {
     grid-column: 1;
     grid-row: auto;
-  }
-  .cicloTrazo {
-    display: none;
-  }
-  .cicloPasos {
-    grid-template-columns: 1fr;
-    gap: 22px;
-    padding-left: 4px;
-    border-left: 2px solid rgba(11, 31, 58, 0.1);
-  }
-  .cicloPaso {
-    position: relative;
-    padding-left: 84px;
-    min-height: 56px;
-    opacity: 1;
-  }
-  .cicloNodo {
-    position: absolute;
-    left: 10px;
-    top: 0;
-    transform: none;
   }
   .cierreHex {
     width: 300px;

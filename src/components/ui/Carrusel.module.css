@@ -1,0 +1,150 @@
+/* Carrusel horizontal para móvil: scroll-snap nativo, la siguiente tarjeta asoma */
+
+.carrusel {
+  /* Sale del gutter del contenedor para que las tarjetas lleguen al borde */
+  margin-inline: -16px;
+}
+
+.pista {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 84%;
+  gap: 12px;
+  margin: 0;
+  padding: 4px 16px 18px;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 16px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pista::-webkit-scrollbar {
+  display: none;
+}
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  scroll-snap-align: start;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.icono {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 42px;
+  background: var(--grad);
+  color: #fff;
+}
+
+.num {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--brand);
+}
+
+.etiqueta {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(30, 58, 138, 0.08);
+  color: var(--brand);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.titulo {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.2;
+  color: var(--navy);
+}
+
+.texto {
+  margin: 0 0 10px;
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+  min-height: 44px;
+  font-weight: 600;
+  color: var(--brand);
+  text-decoration: none;
+}
+
+.cta svg {
+  font-size: 1.1rem;
+}
+
+/* ---------- Puntos ---------- */
+.puntos {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+/* Área táctil de 28px con un punto visible pequeño */
+.puntos button {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.puntos button::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(11, 31, 58, 0.18);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s var(--ease), background-color 0.3s ease;
+}
+
+.puntos .puntoActivo::after {
+  width: 22px;
+  background: var(--brand);
+}
+
+.puntos button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: -4px;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .puntos button::after {
+    transition: none;
+  }
+}

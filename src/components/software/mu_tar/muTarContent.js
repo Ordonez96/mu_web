@@ -19,6 +19,7 @@ export const HERO = {
 export const MODULOS_VENTA = [
   {
     id: "ro",
+    corto: "Operativo",
     icon: "ro",
     titulo: "RIESGO OPERATIVO",
     descripcion: "AMA · Scorecard",
@@ -40,6 +41,7 @@ export const MODULOS_VENTA = [
   },
   {
     id: "credito",
+    corto: "Crédito",
     icon: "rc",
     titulo: "RIESGO DE CRÉDITO",
     descripcion: "NCB 022 · LOGIT",
@@ -61,6 +63,7 @@ export const MODULOS_VENTA = [
   },
   {
     id: "liquidez",
+    corto: "Liquidez",
     icon: "rl",
     titulo: "RIESGO DE LIQUIDEZ",
     descripcion: "VaR · Backtesting",
@@ -82,6 +85,7 @@ export const MODULOS_VENTA = [
   },
   {
     id: "laft",
+    corto: "LA-FT",
     icon: "laft",
     titulo: "LAVADO DE DINERO",
     descripcion: "LA-FT · Custom",
@@ -103,6 +107,7 @@ export const MODULOS_VENTA = [
   },
   {
     id: "tecnologico",
+    corto: "Tecnológico",
     icon: "tecnologico",
     titulo: "RO TECNOLÓGICO",
     descripcion: "Matriz tecnológica",
@@ -124,6 +129,7 @@ export const MODULOS_VENTA = [
   },
   {
     id: "legal",
+    corto: "Legal",
     icon: "legal",
     titulo: "RO LEGAL",
     descripcion: "Matriz legal",
@@ -320,6 +326,22 @@ export const RIESGOS_EJEMPLO = [
   { p: 2, i: 2, nombre: "Daño a activos físicos en agencias" },
   { p: 1, i: 3, nombre: "Fraude interno en custodia de valores" },
   { p: 3, i: 2, nombre: "Reclamos por cobros indebidos" },
+];
+
+/* ---------- Riesgo en movimiento: de inherente a residual ----------
+ * p/i = probabilidad e impacto (1-5). Cada riesgo termina en una celda
+ * distinta para que ningún punto se tape con otro. Datos de EJEMPLO.
+ */
+export const RIESGOS_MOVIMIENTO = [
+  { nombre: "Fraude externo en canales digitales", p0: 4, i0: 5, p1: 2, i1: 4 },
+  { nombre: "Interrupción del core transaccional", p0: 3, i0: 5, p1: 1, i1: 4 },
+  { nombre: "Errores en el desembolso de créditos", p0: 4, i0: 4, p1: 2, i1: 3 },
+  { nombre: "Incumplimiento en reportes al regulador", p0: 2, i0: 4, p1: 1, i1: 3 },
+  { nombre: "Rotación de personal clave", p0: 3, i0: 3, p1: 2, i1: 1 },
+  { nombre: "Fallas en conciliación de cajeros", p0: 5, i0: 2, p1: 3, i1: 1 },
+  { nombre: "Daño a activos físicos en agencias", p0: 2, i0: 2, p1: 1, i1: 1 },
+  { nombre: "Fraude interno en custodia de valores", p0: 1, i0: 3, p1: 1, i1: 2 },
+  { nombre: "Reclamos por cobros indebidos", p0: 3, i0: 2, p1: 2, i1: 2 },
 ];
 
 export const nivelRiesgo = (score) => {

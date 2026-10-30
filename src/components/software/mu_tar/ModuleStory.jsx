@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { HexNucleo, HexagonoServicio, calcularPanal, UI } from '../../hex/HexFlower';
-import { getIcon } from '../../ui/icons';
+import Carrusel from '../../ui/Carrusel';
+import { useMediaQuery, MQ } from '../../../hooks/useMediaQuery';
 import { MODULOS_VENTA } from './muTarContent';
 import hexStyles from '../../hex/Hex.module.css';
 import styles from './MuTar.module.css';
 
-const MD = '(min-width: 900px)';
 const N = MODULOS_VENTA.length;
 const noop = () => {};
 const dos = (n) => String(n).padStart(2, '0');
@@ -162,45 +162,26 @@ const HistoriaEscritorio = () => {
   );
 };
 
-/* ---------------- Móvil: lista de módulos ---------------- */
+/* ---------------- Móvil: carrusel deslizable ---------------- */
+const TARJETAS = MODULOS_VENTA.map((m) => ({
+  id: m.id,
+  icon: m.icon,
+  titulo: m.textoTitulo,
+  etiqueta: m.etiqueta,
+  parrafos: m.parrafos,
+}));
+
 const HistoriaMovil = () => (
   <section className="mu-section" aria-labelledby="historia-titulo">
     <div className="mu-container">
       <h2 id="historia-titulo" className="mu-title">Seis módulos, un solo sistema</h2>
       <span className="mu-accent" />
-      <ol className={styles.historiaLista}>
-        {MODULOS_VENTA.map((m, i) => {
-          const Icon = getIcon(m.icon);
-          return (
-            <li key={m.id}>
-              <span className={`${styles.historiaListaIcono} mu-hex`} aria-hidden="true">
-                <Icon />
-              </span>
-              <span className={styles.historiaNum}>
-                Módulo {dos(i + 1)} / {dos(N)}
-              </span>
-              <h3>{m.textoTitulo}</h3>
-              {m.parrafos.map((p) => (
-                <p key={p}>{p}</p>
-              ))}
-            </li>
-          );
-        })}
-      </ol>
+      <Carrusel items={TARJETAS} etiqueta="Módulos de TAR" numerar />
     </div>
   </section>
 );
 
-/** Recorrido de los módulos reales de TAR. */
-const ModuleStory = () => {
-  const [esMd, setEsMd] = useState(() => window.matchMedia(MD).matches);
-  useEffect(() => {
-    const mq = window.matchMedia(MD);
-    const fn = () => setEsMd(mq.matches);
-    mq.addEventListener('change', fn);
-    return () => mq.removeEventListener('change', fn);
-  }, []);
-  return esMd ? <HistoriaEscritorio /> : <HistoriaMovil />;
-};
+/** Recorrido de los módulos de TAR. */
+const ModuleStory = () => (useMediaQuery(MQ.md) ? <HistoriaEscritorio /> : <HistoriaMovil />);
 
 export default ModuleStory;

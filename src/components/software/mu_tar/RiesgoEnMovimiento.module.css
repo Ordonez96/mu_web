@@ -1,0 +1,437 @@
+/* =========================================================
+   Riesgo en movimiento (sección sticky guiada por el scroll)
+   --p (0→1) lo escribe useScrollProgress. Fases derivadas:
+   --a aparición · --h mapa de calor · --m movimiento a residual
+   Solo se animan transform y opacity.
+   ========================================================= */
+
+.recorrido {
+  --p: 0;
+  --h: clamp(0, (var(--p) - 0.18) / 0.2, 1);
+  --m: clamp(0, (var(--p) - 0.42) / 0.5, 1);
+  position: relative;
+  height: 320vh;
+}
+
+.sticky {
+  position: sticky;
+  top: var(--nav-h);
+  height: calc(100vh - var(--nav-h));
+  height: calc(100svh - var(--nav-h));
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+
+.titulo {
+  margin-top: 16px;
+}
+
+.lead {
+  margin: 0 0 24px;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+/* ---------- Etapas: la activa se resalta según data-etapa ---------- */
+.etapas {
+  --mover: 6px;
+  display: grid;
+  gap: 6px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.etapa {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 10px 12px;
+  border-radius: 12px;
+  opacity: 0.45;
+  transition: opacity 0.4s var(--ease), background-color 0.4s var(--ease), transform 0.4s var(--ease);
+}
+
+.etapaNum {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 35px;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  background: rgba(30, 58, 138, 0.12);
+  color: var(--brand);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: background 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+.etapa strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  color: var(--navy);
+}
+
+.etapa small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+/* Etapas ya alcanzadas: legibles; la actual: destacada */
+.recorrido[data-etapa='0'] .etapa[data-n='0'],
+.recorrido[data-etapa='1'] .etapa:is([data-n='0'], [data-n='1']),
+.recorrido[data-etapa='2'] .etapa:is([data-n='0'], [data-n='1'], [data-n='2']),
+.recorrido[data-etapa='3'] .etapa {
+  opacity: 0.8;
+}
+
+.recorrido[data-etapa='0'] .etapa[data-n='0'],
+.recorrido[data-etapa='1'] .etapa[data-n='1'],
+.recorrido[data-etapa='2'] .etapa[data-n='2'],
+.recorrido[data-etapa='3'] .etapa[data-n='3'] {
+  opacity: 1;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  transform: translateX(var(--mover));
+}
+
+.recorrido[data-etapa='0'] .etapa[data-n='0'] .etapaNum,
+.recorrido[data-etapa='1'] .etapa[data-n='1'] .etapaNum,
+.recorrido[data-etapa='2'] .etapa[data-n='2'] .etapaNum,
+.recorrido[data-etapa='3'] .etapa[data-n='3'] .etapaNum {
+  background: var(--grad);
+  color: #fff;
+}
+
+/* ---------- Métricas ---------- */
+.metricas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.metricas > div {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.metricas dt {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.metricas dd {
+  margin: 2px 0 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.9rem;
+  line-height: 1.1;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.barra {
+  display: block;
+  height: 4px;
+  margin-top: 8px;
+  border-radius: 4px;
+  background: rgba(11, 31, 58, 0.08);
+  overflow: hidden;
+}
+
+.barra span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--r-bajo), var(--r-alto) 60%, var(--r-critico));
+  transform-origin: left;
+  transform: scaleX(var(--exp, 1));
+}
+
+/* ---------- Panel con la matriz ---------- */
+.panel {
+  padding: clamp(16px, 2.4vw, 24px);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: var(--shadow-lg);
+}
+
+.panelTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.panelTitulo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+/* Etiqueta que cambia de "Inherente" a "Residual" con la fase de movimiento */
+.estado {
+  position: relative;
+  display: inline-grid;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.estado > span {
+  grid-area: 1 / 1;
+  padding: 4px 12px;
+  border-radius: 999px;
+  text-align: center;
+}
+
+.estadoInherente {
+  background: rgba(214, 59, 85, 0.12);
+  color: #b4233e;
+  opacity: calc(1 - var(--m));
+}
+
+.estadoResidual {
+  background: rgba(15, 159, 143, 0.14);
+  color: #0b7a6e;
+  opacity: var(--m);
+}
+
+.matriz {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  grid-template-rows: auto 22px;
+  gap: 6px;
+}
+
+.ejeY,
+.ejeX {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+}
+
+.ejeY {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  align-self: center;
+}
+
+.ejeX {
+  grid-column: 2;
+}
+
+.tablero {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+  aspect-ratio: 1;
+}
+
+/* Celda: tinte suave siempre + intensidad que crece en la fase "Medir" */
+.celda {
+  position: relative;
+  border-radius: 8px;
+  background: rgba(11, 31, 58, 0.04);
+  overflow: hidden;
+}
+
+.celda::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--c);
+  opacity: calc(0.08 + var(--h) * 0.22);
+}
+
+/* ---------- Puntos de riesgo ----------
+   .punto ocupa todo el tablero: así translate(%) usa el tamaño del tablero
+   (cada celda = 20 %). .bola queda en la posición inherente. */
+.capaPuntos {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.punto {
+  --a: clamp(0, (var(--p) - var(--k) * 0.015) / 0.12, 1);
+  --mk: clamp(0, var(--m) * 1.6 - var(--k) * 0.075, 1);
+  position: absolute;
+  inset: 0;
+  transform: translate(calc(var(--dx) * 20% * var(--mk)), calc(var(--dy) * 20% * var(--mk)));
+  will-change: transform;
+}
+
+.bola {
+  position: absolute;
+  width: clamp(18px, 7%, 30px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--c0);
+  border: 3px solid #fff;
+  box-shadow: 0 6px 16px -6px rgba(11, 31, 58, 0.55);
+  transform: translate(-50%, -50%) scale(var(--a));
+  opacity: var(--a);
+}
+
+/* Capa del color residual que aparece mientras el punto se mueve */
+.bola::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--c1);
+  opacity: var(--mk);
+}
+
+.nota {
+  margin: 12px 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ---------- Móvil: todo en una pantalla, etapas compactas ---------- */
+@media (max-width: 899.98px) {
+  .recorrido {
+    height: 280vh;
+  }
+
+  .sticky {
+    align-items: flex-start;
+    padding-top: 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .titulo {
+    font-size: clamp(1.45rem, 6vw, 1.9rem);
+    margin-bottom: 8px;
+  }
+
+  .texto :global(.mu-chip),
+  .texto :global(.mu-accent),
+  .lead,
+  .nota {
+    display: none;
+  }
+
+  /* Cuatro pasos en fila; solo el actual muestra su descripción */
+  .etapas {
+    --mover: 0px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .etapa {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    text-align: center;
+  }
+
+  .etapa small {
+    display: none;
+  }
+
+  .etapa strong {
+    font-size: 0.82rem;
+  }
+
+  .etapaNum {
+    width: 34px;
+    height: 30px;
+    font-size: 0.8rem;
+  }
+
+  .metricas {
+    order: 3;
+    gap: 8px;
+  }
+
+  .metricas > div {
+    padding: 10px 12px;
+  }
+
+  .metricas dd {
+    font-size: 1.5rem;
+  }
+
+  .visual {
+    /* Cabe en lo que queda de pantalla sin desbordar */
+    width: min(100%, calc(100svh - var(--nav-h) - 340px));
+    min-width: 240px;
+    margin-inline: auto;
+  }
+
+  .panel {
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .tablero {
+    gap: 4px;
+  }
+
+  .celda {
+    border-radius: 6px;
+  }
+}
+
+/* El texto va arriba en móvil, las métricas debajo del mapa */
+@media (max-width: 899.98px) {
+  .texto {
+    display: contents;
+  }
+
+  .grid > .texto > .titulo,
+  .grid > .texto > .etapas {
+    order: 1;
+  }
+
+  .visual {
+    order: 2;
+  }
+}
+
+/* Sin animación: estado final estático, sin recorrido largo */
+@media (prefers-reduced-motion: reduce) {
+  .recorrido {
+    height: auto;
+    padding: clamp(64px, 8vw, 104px) 0;
+  }
+
+  .sticky {
+    position: static;
+    height: auto;
+  }
+
+  .etapa,
+  .etapaNum {
+    transition: none;
+  }
+}

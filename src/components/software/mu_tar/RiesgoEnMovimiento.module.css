@@ -1,5 +1,5 @@
 /* =========================================================
-   Riesgo en movimiento (sección sticky guiada por el scroll)
+   Riesgo en movimiento (animación ligada al scroll, sin fijar la sección)
    --p (0→1) lo escribe useScrollProgress. Fases derivadas:
    --a aparición · --h mapa de calor · --m movimiento a residual
    Solo se animan transform y opacity.
@@ -9,17 +9,6 @@
   --p: 0;
   --h: clamp(0, (var(--p) - 0.18) / 0.2, 1);
   --m: clamp(0, (var(--p) - 0.42) / 0.5, 1);
-  position: relative;
-  height: 320vh;
-}
-
-.sticky {
-  position: sticky;
-  top: var(--nav-h);
-  height: calc(100vh - var(--nav-h));
-  height: calc(100svh - var(--nav-h));
-  display: flex;
-  align-items: center;
   overflow: hidden;
 }
 
@@ -312,15 +301,6 @@
 
 /* ---------- Móvil: todo en una pantalla, etapas compactas ---------- */
 @media (max-width: 899.98px) {
-  .recorrido {
-    height: 280vh;
-  }
-
-  .sticky {
-    align-items: flex-start;
-    padding-top: 16px;
-  }
-
   .grid {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -331,9 +311,10 @@
     margin-bottom: 8px;
   }
 
-  .texto :global(.mu-chip),
-  .texto :global(.mu-accent),
-  .lead,
+  .lead {
+    margin-bottom: 4px;
+  }
+
   .nota {
     display: none;
   }
@@ -382,9 +363,8 @@
   }
 
   .visual {
-    /* Cabe en lo que queda de pantalla sin desbordar */
-    width: min(100%, calc(100svh - var(--nav-h) - 340px));
-    min-width: 240px;
+    width: 100%;
+    max-width: 440px;
     margin-inline: auto;
   }
 
@@ -408,9 +388,13 @@
     display: contents;
   }
 
-  .grid > .texto > .titulo,
-  .grid > .texto > .etapas {
+  /* Texto y etapas arriba, mapa en medio, métricas al final */
+  .texto > * {
     order: 1;
+  }
+
+  .texto > .metricas {
+    order: 3;
   }
 
   .visual {
@@ -418,18 +402,8 @@
   }
 }
 
-/* Sin animación: estado final estático, sin recorrido largo */
+/* Sin animación: el hook deja --p en 1 (estado final) */
 @media (prefers-reduced-motion: reduce) {
-  .recorrido {
-    height: auto;
-    padding: clamp(64px, 8vw, 104px) 0;
-  }
-
-  .sticky {
-    position: static;
-    height: auto;
-  }
-
   .etapa,
   .etapaNum {
     transition: none;

@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useScrollProgress } from '../../../hooks/useScrollProgress';
+import { useMediaQuery, MQ } from '../../../hooks/useMediaQuery';
 import { CICLO, RIESGOS_MOVIMIENTO, nivelRiesgo } from './muTarContent';
 import styles from './RiesgoEnMovimiento.module.css';
 
@@ -41,8 +42,8 @@ const avancePunto = (m, k) => clamp01(m * 1.6 - k * 0.075);
 const etapaDe = (p) => (p < 0.2 ? 0 : p < 0.42 ? 1 : p < 0.72 ? 2 : 3);
 
 /**
- * Sección "sticky": al hacer scroll los riesgos se identifican, se miden
- * y se mueven de su posición inherente a la residual.
+ * Al cruzar la pantalla con el scroll normal (sin fijarse ni retener el scroll),
+ * los riesgos se identifican, se miden y pasan de su posición inherente a la residual.
  * El CSS lee --p (0→1); aquí solo se actualizan textos cuando cambian.
  */
 const RiesgoEnMovimiento = ({ id = 'riesgo-en-movimiento', alt = false }) => {
@@ -50,8 +51,13 @@ const RiesgoEnMovimiento = ({ id = 'riesgo-en-movimiento', alt = false }) => {
   const expRef = useRef(null);
   const ultimo = useRef({ etapa: -1, criticos: -1, exp: -1 });
 
+  // Sin fijar la sección: avanza mientras cruza la pantalla con el scroll normal.
+  // En móvil el mapa queda más abajo, así que el rango se corre para que el
+  // movimiento ocurra mientras el mapa está a la vista.
+  const esMd = useMediaQuery(MQ.md);
   const seccionRef = useScrollProgress({
-    modo: 'recorrido',
+    inicio: esMd ? 0.8 : 0.5,
+    fin: esMd ? -0.1 : -0.45,
     onProgreso: (p) => {
       const el = seccionRef.current;
       if (!el) return;
@@ -81,98 +87,96 @@ const RiesgoEnMovimiento = ({ id = 'riesgo-en-movimiento', alt = false }) => {
     <section
       ref={seccionRef}
       id={id}
-      className={`${styles.recorrido} ${alt ? 'mu-section--alt' : ''}`}
+      className={`mu-section ${styles.recorrido} ${alt ? 'mu-section--alt' : ''}`}
       data-etapa="0"
       aria-labelledby={`${id}-titulo`}
     >
-      <div className={styles.sticky}>
-        <div className={`mu-container ${styles.grid}`}>
-          <div className={styles.texto}>
-            <span className="mu-chip">Así trabaja TAR</span>
-            <h2 id={`${id}-titulo`} className={`mu-title ${styles.titulo}`}>
-              Del riesgo inherente al residual
-            </h2>
-            <span className="mu-accent" />
-            <p className={styles.lead}>
-              Sigue bajando: así se ve tu mapa de riesgos cuando cada riesgo tiene
-              controles y un plan de acción.
-            </p>
+      <div className={`mu-container ${styles.grid}`}>
+        <div className={styles.texto}>
+          <span className="mu-chip">Así trabaja TAR</span>
+          <h2 id={`${id}-titulo`} className={`mu-title ${styles.titulo}`}>
+            Del riesgo inherente al residual
+          </h2>
+          <span className="mu-accent" />
+          <p className={styles.lead}>
+            Sigue bajando: así se ve tu mapa de riesgos cuando cada riesgo tiene controles y un plan de
+            acción.
+          </p>
 
-            <ol className={styles.etapas}>
-              {CICLO.map((c, i) => (
-                <li key={c.titulo} className={styles.etapa} data-n={i}>
-                  <span className={styles.etapaNum} aria-hidden="true">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span>
-                    <strong>{c.titulo}</strong>
-                    <small>{c.texto}</small>
-                  </span>
-                </li>
-              ))}
-            </ol>
-
-            <dl className={styles.metricas} aria-hidden="true">
-              <div>
-                <dt>Riesgos críticos</dt>
-                <dd ref={criticosRef}>{CRITICOS_0}</dd>
-              </div>
-              <div>
-                <dt>Exposición total</dt>
-                <dd ref={expRef}>100 %</dd>
-                <span className={styles.barra}>
-                  <span />
+          <ol className={styles.etapas}>
+            {CICLO.map((c, i) => (
+              <li key={c.titulo} className={styles.etapa} data-n={i}>
+                <span className={styles.etapaNum} aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
                 </span>
-              </div>
-            </dl>
-            {/* Resumen para lectores de pantalla (las métricas animadas van ocultas) */}
-            <p className="mu-sr-only">
-              Ejemplo: con controles y planes de acción, los riesgos críticos pasan de{' '}
-              {CRITICOS_0} a {CRITICOS_1} y la exposición total baja al {PCT_FINAL} %.
-            </p>
-          </div>
-
-          <div className={styles.visual} aria-hidden="true">
-            <div className={styles.panel}>
-              <div className={styles.panelTop}>
-                <span className={styles.panelTitulo}>Mapa de riesgo</span>
-                <span className={styles.estado}>
-                  <span className={styles.estadoInherente}>Inherente</span>
-                  <span className={styles.estadoResidual}>Residual</span>
+                <span>
+                  <strong>{c.titulo}</strong>
+                  <small>{c.texto}</small>
                 </span>
-              </div>
+              </li>
+            ))}
+          </ol>
 
-              <div className={styles.matriz}>
-                <span className={styles.ejeY}>Probabilidad</span>
-                <div className={styles.tablero}>
-                  {CELDAS.map((c) => (
-                    <span key={c.id} className={styles.celda} style={{ '--c': c.color }} />
-                  ))}
-                  <div className={styles.capaPuntos}>
-                    {PUNTOS.map((r) => (
-                      <span
-                        key={r.nombre}
-                        className={styles.punto}
-                        style={{
-                          '--k': r.k,
-                          '--dx': r.i1 - r.i0,
-                          '--dy': r.p0 - r.p1,
-                          '--c0': r.c0,
-                          '--c1': r.c1,
-                        }}
-                      >
-                        <span
-                          className={styles.bola}
-                          style={{ left: `${(r.i0 - 0.5) * 20}%`, top: `${(5.5 - r.p0) * 20}%` }}
-                        />
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <span className={styles.ejeX}>Impacto</span>
-              </div>
-              <p className={styles.nota}>Datos de ejemplo · {N} riesgos operativos</p>
+          <dl className={styles.metricas} aria-hidden="true">
+            <div>
+              <dt>Riesgos críticos</dt>
+              <dd ref={criticosRef}>{CRITICOS_0}</dd>
             </div>
+            <div>
+              <dt>Exposición total</dt>
+              <dd ref={expRef}>100 %</dd>
+              <span className={styles.barra}>
+                <span />
+              </span>
+            </div>
+          </dl>
+          {/* Resumen para lectores de pantalla (las métricas animadas van ocultas) */}
+          <p className="mu-sr-only">
+            Ejemplo: con controles y planes de acción, los riesgos críticos pasan de {CRITICOS_0} a{' '}
+            {CRITICOS_1} y la exposición total baja al {PCT_FINAL} %.
+          </p>
+        </div>
+
+        <div className={styles.visual} aria-hidden="true">
+          <div className={styles.panel}>
+            <div className={styles.panelTop}>
+              <span className={styles.panelTitulo}>Mapa de riesgo</span>
+              <span className={styles.estado}>
+                <span className={styles.estadoInherente}>Inherente</span>
+                <span className={styles.estadoResidual}>Residual</span>
+              </span>
+            </div>
+
+            <div className={styles.matriz}>
+              <span className={styles.ejeY}>Probabilidad</span>
+              <div className={styles.tablero}>
+                {CELDAS.map((c) => (
+                  <span key={c.id} className={styles.celda} style={{ '--c': c.color }} />
+                ))}
+                <div className={styles.capaPuntos}>
+                  {PUNTOS.map((r) => (
+                    <span
+                      key={r.nombre}
+                      className={styles.punto}
+                      style={{
+                        '--k': r.k,
+                        '--dx': r.i1 - r.i0,
+                        '--dy': r.p0 - r.p1,
+                        '--c0': r.c0,
+                        '--c1': r.c1,
+                      }}
+                    >
+                      <span
+                        className={styles.bola}
+                        style={{ left: `${(r.i0 - 0.5) * 20}%`, top: `${(5.5 - r.p0) * 20}%` }}
+                      />
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <span className={styles.ejeX}>Impacto</span>
+            </div>
+            <p className={styles.nota}>Datos de ejemplo · {N} riesgos operativos</p>
           </div>
         </div>
       </div>

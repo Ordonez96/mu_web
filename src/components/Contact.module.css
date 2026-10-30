@@ -53,7 +53,7 @@
 
 .filas {
   display: grid;
-  gap: 10px;
+  gap: 2px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -66,17 +66,23 @@
   color: var(--text);
 }
 
+/* Área táctil de 44px (recomendada en móvil) sin cambiar el aspecto */
 .filas a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   color: var(--navy);
   font-weight: 500;
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+  transition: text-decoration-color 0.2s ease, color 0.2s ease;
 }
 
 .filas a:hover {
   color: var(--brand);
-  border-bottom-color: currentColor;
+  text-decoration-color: currentColor;
 }
 
 .filaIcono {

@@ -54,6 +54,9 @@ const GUION = [
   { t: 4300, etapa: 3, fase: 'residual' }, // Mitigar: estado final
 ];
 
+/* Tiempo hasta que llega el último punto (1.2s de recorrido + escalonado del CSS) */
+const LLEGADA_MS = 1500;
+
 const reducirMovimiento = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /**
@@ -109,14 +112,23 @@ const RiesgoEnMovimiento = ({ id = 'riesgo-en-movimiento' }) => {
 
   // El usuario toma el control: se detiene el guion
   const elegirFase = (f) => {
+    if (f === fase && visible) return; // ya está en ese estado
     cancelar();
     setVisible(true);
     setFase(f);
-    setEtapa(f === 'inherente' ? 1 : 3);
+    if (f === 'inherente' || reducirMovimiento()) {
+      setEtapa(f === 'inherente' ? 1 : 3);
+      return;
+    }
+    // Controlar mientras los puntos se mueven; Mitigar (y métricas finales) al llegar
+    setEtapa(2);
+    timers.current = [setTimeout(() => setEtapa(3), LLEGADA_MS)];
   };
 
-  const datos = fase === 'residual' ? RESIDUAL : INHERENTE;
-  const pct = fase === 'residual' ? PCT_RESIDUAL : 100;
+  // Las métricas cambian cuando los puntos ya llegaron, no al empezar a moverse
+  const llegaron = fase === 'residual' && etapa === 3;
+  const datos = llegaron ? RESIDUAL : INHERENTE;
+  const pct = llegaron ? PCT_RESIDUAL : 100;
 
   return (
     <section

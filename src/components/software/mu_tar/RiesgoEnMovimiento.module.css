@@ -1,0 +1,494 @@
+/* =========================================================
+   Del riesgo inherente al residual
+   Estados en la sección: data-visible · data-etapa (0-3) · data-fase
+   Solo transiciones de transform/opacity (y el color del punto al llegar).
+   ========================================================= */
+
+.seccion {
+  --mover-dur: 1.2s;
+  --paso: 90ms;
+  overflow: hidden;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+
+.titulo {
+  margin-top: 16px;
+}
+
+.lead {
+  margin: 0 0 24px;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+/* ---------- Etapas: la actual se destaca ---------- */
+.etapas {
+  --mover: 6px;
+  display: grid;
+  gap: 6px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.etapa {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 10px 12px;
+  border-radius: 12px;
+  opacity: 0.45;
+  transition: opacity 0.4s var(--ease), background-color 0.4s var(--ease), transform 0.4s var(--ease),
+    box-shadow 0.4s var(--ease);
+}
+
+.etapaNum {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 35px;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  background: rgba(30, 58, 138, 0.12);
+  color: var(--brand);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: background 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+.etapa strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  color: var(--navy);
+}
+
+.etapa small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+/* Etapas ya alcanzadas: legibles */
+.seccion[data-etapa='1'] .etapa[data-n='0'],
+.seccion[data-etapa='2'] .etapa:is([data-n='0'], [data-n='1']),
+.seccion[data-etapa='3'] .etapa {
+  opacity: 0.8;
+}
+
+/* Etapa actual (solo cuando el mapa ya está en pantalla) */
+.seccion[data-visible='true'][data-etapa='0'] .etapa[data-n='0'],
+.seccion[data-etapa='1'] .etapa[data-n='1'],
+.seccion[data-etapa='2'] .etapa[data-n='2'],
+.seccion[data-etapa='3'] .etapa[data-n='3'] {
+  opacity: 1;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  transform: translateX(var(--mover));
+}
+
+.seccion[data-visible='true'][data-etapa='0'] .etapa[data-n='0'] .etapaNum,
+.seccion[data-etapa='1'] .etapa[data-n='1'] .etapaNum,
+.seccion[data-etapa='2'] .etapa[data-n='2'] .etapaNum,
+.seccion[data-etapa='3'] .etapa[data-n='3'] .etapaNum {
+  background: var(--grad);
+  color: #fff;
+}
+
+/* ---------- Métricas ---------- */
+.metricas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.metricas > div {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.metricas dt {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.metricas dd {
+  margin: 2px 0 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.9rem;
+  line-height: 1.1;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.barra {
+  display: block;
+  height: 4px;
+  margin-top: 8px;
+  border-radius: 4px;
+  background: rgba(11, 31, 58, 0.08);
+  overflow: hidden;
+}
+
+.barra span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--r-bajo), var(--r-alto) 60%, var(--r-critico));
+  transform-origin: left;
+  transition: transform var(--mover-dur) var(--ease);
+}
+
+/* ---------- Panel ---------- */
+.panel {
+  padding: clamp(16px, 2.4vw, 24px);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: var(--shadow-lg);
+}
+
+.panelTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.panelTitulo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+/* Selector Inherente | Residual */
+.selector {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(11, 31, 58, 0.06);
+}
+
+.selector button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.selector button:hover {
+  color: var(--navy);
+}
+
+.selector .sel_inherente[aria-pressed='true'] {
+  background: #fff;
+  color: #b4233e;
+  box-shadow: var(--shadow-sm);
+}
+
+.selector .sel_residual[aria-pressed='true'] {
+  background: #fff;
+  color: #0b7a6e;
+  box-shadow: var(--shadow-sm);
+}
+
+.selector button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+
+/* ---------- Matriz ---------- */
+.matriz {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  grid-template-rows: auto 22px;
+  gap: 6px;
+}
+
+.ejeY,
+.ejeX {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+}
+
+.ejeY {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  align-self: center;
+}
+
+.ejeX {
+  grid-column: 2;
+}
+
+.tablero {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+  aspect-ratio: 1;
+}
+
+/* Celda: tinte suave; en "Medir" se enciende el mapa de calor */
+.celda {
+  position: relative;
+  border-radius: 8px;
+  background: rgba(11, 31, 58, 0.04);
+  overflow: hidden;
+}
+
+.celda::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--c);
+  opacity: 0.12;
+  transition: opacity 0.8s var(--ease);
+}
+
+.seccion:not([data-etapa='0']) .celda::after {
+  opacity: 0.3;
+}
+
+/* ---------- Trayectos y posición original ---------- */
+.trayectos {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.trayectos line {
+  stroke: var(--navy);
+  stroke-width: 1.5;
+  stroke-opacity: 0.35;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* La línea aparece mientras el punto recorre el trayecto */
+.seccion[data-fase='residual'] .trayectos line {
+  opacity: 1;
+  transition: opacity calc(var(--mover-dur) * 0.6) ease calc(var(--k) * var(--paso) + 0.2s);
+}
+
+/* Huella punteada donde estaba el riesgo */
+.fantasma {
+  position: absolute;
+  width: clamp(16px, 6%, 26px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px dashed rgba(11, 31, 58, 0.45);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.seccion[data-fase='residual'] .fantasma {
+  opacity: 1;
+  transition: opacity 0.4s ease calc(var(--k) * var(--paso));
+}
+
+/* ---------- Puntos ----------
+   .punto ocupa todo el tablero: translate(%) usa su tamaño (cada celda = 20 %) */
+.punto {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: transform calc(var(--mover-dur) * 0.6) var(--ease);
+}
+
+.seccion[data-fase='residual'] .punto {
+  transform: translate(calc(var(--dx) * 20%), calc(var(--dy) * 20%));
+  transition: transform var(--mover-dur) var(--ease) calc(var(--k) * var(--paso));
+}
+
+.bola {
+  position: absolute;
+  width: clamp(18px, 7%, 30px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--c0);
+  border: 3px solid #fff;
+  box-shadow: 0 6px 16px -6px rgba(11, 31, 58, 0.55);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s var(--ease) calc(var(--k) * 70ms), background-color 0.3s ease;
+}
+
+.seccion[data-visible='true'] .bola {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* El color cambia al llegar (sin mezclas intermedias) */
+.seccion[data-fase='residual'] .bola {
+  background: var(--c1);
+  transition: transform 0.5s var(--ease), background-color 0.35s ease
+    calc(var(--mover-dur) * 0.85 + var(--k) * var(--paso));
+}
+
+/* ---------- Leyenda ---------- */
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 14px 0 0 28px;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.leyenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.leyenda span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.nota {
+  margin: 10px 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ---------- Móvil ---------- */
+@media (max-width: 899.98px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .lead {
+    margin-bottom: 4px;
+  }
+
+  /* Cuatro pasos en fila; la descripción se omite para ahorrar alto */
+  .etapas {
+    --mover: 0px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 0;
+  }
+
+  .etapa {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    text-align: center;
+  }
+
+  .etapa small {
+    display: none;
+  }
+
+  .etapa strong {
+    font-size: 0.82rem;
+  }
+
+  .etapaNum {
+    width: 34px;
+    height: 30px;
+    font-size: 0.8rem;
+  }
+
+  /* Orden: texto y etapas → mapa → métricas */
+  .texto {
+    display: contents;
+  }
+
+  .texto > * {
+    order: 1;
+  }
+
+  .visual {
+    order: 2;
+    width: 100%;
+    max-width: 460px;
+    margin-inline: auto;
+  }
+
+  .texto > .metricas {
+    order: 3;
+    gap: 8px;
+  }
+
+  .metricas > div {
+    padding: 10px 12px;
+  }
+
+  .metricas dd {
+    font-size: 1.5rem;
+  }
+
+  .panel {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .panelTitulo {
+    font-size: 0.95rem;
+  }
+
+  .selector button {
+    padding: 0 10px;
+  }
+
+  .tablero {
+    gap: 4px;
+  }
+
+  .celda {
+    border-radius: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .etapa,
+  .etapaNum,
+  .celda::after,
+  .barra span,
+  .bola,
+  .punto,
+  .fantasma,
+  .trayectos line,
+  .seccion[data-fase='residual'] .punto,
+  .seccion[data-fase='residual'] .bola,
+  .seccion[data-fase='residual'] .fantasma,
+  .seccion[data-fase='residual'] .trayectos line {
+    transition: none;
+  }
+}

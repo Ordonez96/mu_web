@@ -1,20 +1,39 @@
+import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import PageHeader from './ui/PageHeader';
 import HexFlower, { UI } from './hex/HexFlower';
+import HexOrbita from './hex/HexOrbita';
 import CtaBand from './ui/CtaBand';
 import HexList from './ui/HexList';
+import Carrusel from './ui/Carrusel';
 import { getIcon } from './ui/icons';
-import RiskMatrix from './software/mu_tar/RiskMatrix';
+import RiesgoEnMovimiento from './software/mu_tar/RiesgoEnMovimiento';
+import { MODULOS_VENTA } from './software/mu_tar/muTarContent';
 import { SERVICIOS, PRODUCTO_TAR } from '../config/siteData';
 import { useDocumentTitle } from './useDocumentTittle';
+import { useMediaQuery, MQ } from '../hooks/useMediaQuery';
+import { useScrollProgress } from '../hooks/useScrollProgress';
+import hexStyles from './hex/Hex.module.css';
 import styles from './Home.module.css';
+
+/* La réplica de TAR pesa: se descarga aparte y solo en pantallas donde se lee bien */
+const TarMockup = lazy(() => import('./software/mu_tar/TarMockup'));
 
 /* Pétalos del Home: 4 servicios + el software TAR */
 const PETALOS = [
   ...SERVICIOS.map((s) => ({ ...s, textoTitulo: `${s.titulo} ${s.descripcion}`, cta: 'Ver servicio' })),
   { ...PRODUCTO_TAR, textoTitulo: 'TAR · Sistema de Administración de Riesgos', cta: 'Conocer TAR' },
 ];
+
+/* Mismo contenido en formato carrusel para móvil */
+const TARJETAS_SERVICIOS = PETALOS.map((p) => ({
+  id: p.id,
+  icon: p.icon,
+  titulo: p.textoTitulo,
+  texto: p.resumen,
+  ruta: p.ruta,
+  cta: p.cta,
+}));
 
 const DEFECTO = {
   titulo: 'Riesgos, finanzas y tecnología',
@@ -39,53 +58,83 @@ const CREDENCIALES = [
   { icon: 'addTask', titulo: 'Acompañamiento completo', texto: 'Diagnóstico, implementación y capacitación' },
 ];
 
+/* Hueco con la misma proporción aproximada de la ventana: evita saltos mientras carga */
+const ReservaVentana = () => <div className={styles.reservaVentana} aria-hidden="true" />;
+
 const Home = () => {
   useDocumentTitle('MU Consultores');
+  const esMd = useMediaQuery(MQ.md);
+  const esSm = useMediaQuery(MQ.sm);
+  // --p del hero: la ventana 3D se endereza al bajar
+  const heroRef = useScrollProgress({ inicio: 0.1, fin: -0.45 });
 
   return (
     <>
-      <PageHeader
-        chip="Consultoría en riesgos · El Salvador"
-        titulo="Especialistas en administración de riesgos"
-        subtitulo="Asesoramiento global y tecnología de alto desempeño para que tu institución financiera mida, controle y gestione sus riesgos con confianza."
-        acciones={
-          <>
-            <div className={styles.heroAcciones}>
-              <Link to="/contact" className="mu-btn mu-btn--primary">
-                Solicitar diagnóstico
-              </Link>
-              <Link to={PRODUCTO_TAR.ruta} className="mu-btn mu-btn--ghost">
-                Conocer el software TAR
-              </Link>
-            </div>
-            <ul className={styles.credenciales}>
-              {CREDENCIALES.map((c, i) => {
-                const Icon = getIcon(c.icon);
-                return (
-                  /* Entrada en cascada tras el titular, con la curva del sitio */
-                  <motion.li
-                    key={c.titulo}
-                    className={styles.credencial}
-                    initial={{ opacity: 0, y: 14 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.35 + i * 0.08, ease: UI.ease }}
-                  >
-                    <span className={`${styles.credencialIcono} mu-hex`} aria-hidden="true">
-                      <Icon />
-                    </span>
-                    <span>
-                      <strong>{c.titulo}</strong>
-                      <small>{c.texto}</small>
-                    </span>
-                  </motion.li>
-                );
-              })}
-            </ul>
-          </>
-        }
-      />
+      {/* ================= HERO ================= */}
+      <section ref={heroRef} className={`${hexStyles.lienzo} ${styles.hero}`}>
+        <div className={`mu-container ${hexStyles.lienzoContenido}`}>
+          <div className={styles.heroGrid}>
+            <motion.header
+              className={styles.heroTexto}
+              initial={{ opacity: 0, y: -14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: UI.ease }}
+            >
+              <span className="mu-chip">Consultoría en riesgos · El Salvador</span>
+              <h1 className={hexStyles.encabezadoTitulo}>Especialistas en administración de riesgos</h1>
+              <span className="mu-accent" style={{ marginBottom: 0 }} />
+              <p className={hexStyles.encabezadoSub}>
+                Asesoramiento global y tecnología de alto desempeño para que tu institución financiera
+                mida, controle y gestione sus riesgos con confianza.
+              </p>
+              <div className={styles.heroAcciones}>
+                <Link to="/contact" className="mu-btn mu-btn--primary">
+                  Solicitar diagnóstico
+                </Link>
+                <Link to={PRODUCTO_TAR.ruta} className="mu-btn mu-btn--ghost">
+                  Conocer el software TAR
+                </Link>
+              </div>
+            </motion.header>
 
-      {/* Servicios: explorador interactivo de hexágonos */}
+            <div className={styles.heroVisual}>
+              {esSm ? (
+                <Suspense fallback={<ReservaVentana />}>
+                  <TarMockup />
+                </Suspense>
+              ) : (
+                <HexOrbita modulos={MODULOS_VENTA} />
+              )}
+            </div>
+          </div>
+
+          <ul className={styles.credenciales}>
+            {CREDENCIALES.map((c, i) => {
+              const Icon = getIcon(c.icon);
+              return (
+                /* Entrada en cascada tras el titular, con la curva del sitio */
+                <motion.li
+                  key={c.titulo}
+                  className={styles.credencial}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.35 + i * 0.08, ease: UI.ease }}
+                >
+                  <span className={`${styles.credencialIcono} mu-hex`} aria-hidden="true">
+                    <Icon />
+                  </span>
+                  <span>
+                    <strong>{c.titulo}</strong>
+                    <small>{c.texto}</small>
+                  </span>
+                </motion.li>
+              );
+            })}
+          </ul>
+        </div>
+      </section>
+
+      {/* ================= SERVICIOS ================= */}
       <section className="mu-section mu-section--alt" aria-labelledby="servicios-titulo">
         <div className="mu-container">
           <span className="mu-chip">Servicios</span>
@@ -94,19 +143,74 @@ const Home = () => {
           </h2>
           <span className="mu-accent" />
           <p className="mu-lead">
-            Cuatro líneas de consultoría y una plataforma propia. Explora cada hexágono para ver el detalle.
+            Cuatro líneas de consultoría y una plataforma propia.{' '}
+            {esMd ? 'Explora cada hexágono para ver el detalle.' : 'Desliza para ver cada una.'}
           </p>
-          <HexFlower
-            items={PETALOS}
-            nucleo={{ titulo: 'MU', subtitulo: 'CONSULTING' }}
-            defecto={DEFECTO}
-            unidad="Servicio"
-          />
+          {esMd ? (
+            <HexFlower
+              items={PETALOS}
+              nucleo={{ titulo: 'MU', subtitulo: 'CONSULTING' }}
+              defecto={DEFECTO}
+              unidad="Servicio"
+            />
+          ) : (
+            <Carrusel items={TARJETAS_SERVICIOS} etiqueta="Servicios" />
+          )}
         </div>
       </section>
 
-      {/* Misión */}
-      <section className="mu-section">
+      {/* ================= TAR (sección nocturna) ================= */}
+      <section className={styles.noche} aria-labelledby="tar-home-titulo">
+        <div className={`mu-container ${styles.split} ${styles.splitTar}`}>
+          <div>
+            <span className={styles.chipNoche}>Software propio</span>
+            <h2 id="tar-home-titulo" className={styles.tituloNoche}>
+              TAR: seis módulos, un solo sistema
+            </h2>
+            <span className={styles.acentoNoche} />
+            <p className={styles.parrafoNoche}>
+              Nuestro Sistema de Administración de Riesgos reúne riesgo operativo, crédito, liquidez,
+              LA-FT, RO tecnológico y RO legal en una sola plataforma web.
+            </p>
+            <p className={styles.parrafoNoche}>
+              Adquiere la suite completa o solo los módulos que tu entidad necesita. Lo implementa el
+              mismo equipo que te asesora en riesgos.
+            </p>
+
+            {/* En móvil la órbita ya está en el hero: aquí van los módulos como chips */}
+            {!esMd && (
+              <ul className={styles.chipsNoche} aria-label="Módulos de TAR">
+                {MODULOS_VENTA.map((m) => {
+                  const Icon = getIcon(m.icon);
+                  return (
+                    <li key={m.id}>
+                      <Icon aria-hidden="true" />
+                      {m.textoTitulo}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+
+            <div className={styles.acciones}>
+              <Link to={PRODUCTO_TAR.ruta} className="mu-btn mu-btn--light">
+                Conocer TAR
+              </Link>
+              <Link to={`${PRODUCTO_TAR.ruta}#modulos`} className={`mu-btn ${styles.btnContorno}`}>
+                Elegir módulos
+              </Link>
+            </div>
+          </div>
+
+          {esMd && <HexOrbita modulos={MODULOS_VENTA} tono="oscuro" />}
+        </div>
+      </section>
+
+      {/* ================= RIESGO EN MOVIMIENTO ================= */}
+      <RiesgoEnMovimiento id="riesgo-home" />
+
+      {/* ================= MISIÓN ================= */}
+      <section className="mu-section mu-section--alt">
         <div className={`mu-container ${styles.split}`}>
           <div>
             <h2 className="mu-title">Nuestra misión</h2>
@@ -120,36 +224,6 @@ const Home = () => {
             <h3 className={styles.h3}>Implementación en tiempo récord gracias a</h3>
             <HexList items={RAZONES} />
           </div>
-        </div>
-      </section>
-
-      {/* Software TAR */}
-      <section className="mu-section mu-section--alt">
-        <div className={`mu-container ${styles.split} ${styles.splitTar}`}>
-          <div>
-            <span className="mu-chip">Software propio</span>
-            <h2 className="mu-title" style={{ marginTop: 16 }}>
-              TAR: el riesgo operativo bajo control, en una sola plataforma
-            </h2>
-            <span className="mu-accent" />
-            <p className={styles.parrafo}>
-              Nuestro Sistema de Administración de Riesgos integra riesgo operativo, crédito, liquidez y
-              prevención de LA-FT. Registra eventos de pérdida, gestiona matrices de riesgo y control,
-              calcula capital regulatorio y sigue tus KRIs.
-            </p>
-            <p className={styles.parrafo}>
-              Lo desarrolla y lo implementa el mismo equipo que asesora a tu entidad en riesgos.
-            </p>
-            <div className={styles.acciones}>
-              <Link to={PRODUCTO_TAR.ruta} className="mu-btn mu-btn--primary">
-                Conocer TAR
-              </Link>
-              <Link to="/contact" className="mu-btn mu-btn--ghost">
-                Solicitar demostración
-              </Link>
-            </div>
-          </div>
-          <RiskMatrix />
         </div>
       </section>
 

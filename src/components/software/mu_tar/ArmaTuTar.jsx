@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import CheckRounded from "@mui/icons-material/CheckRounded";
 import AddRounded from "@mui/icons-material/AddRounded";
+import ExpandMoreRounded from "@mui/icons-material/ExpandMoreRounded";
 import WhatsApp from "@mui/icons-material/WhatsApp";
 import EmailOutlined from "@mui/icons-material/EmailOutlined";
 import { getIcon } from "../../ui/icons";
@@ -23,6 +24,9 @@ const armarMensaje = (elegidos) => {
 
 const TarjetaModulo = ({ modulo, elegido, onToggle }) => {
   const Icon = getIcon(modulo.icon);
+  // Solo aplica en móvil: en escritorio la lista siempre se ve (el botón está oculto por CSS)
+  const [abierto, setAbierto] = useState(false);
+  const listaId = `incluye-${modulo.id}`;
   return (
     <li className={`${styles.card} ${elegido ? styles.cardElegida : ""}`}>
       <div className={styles.cardTop}>
@@ -33,7 +37,17 @@ const TarjetaModulo = ({ modulo, elegido, onToggle }) => {
       </div>
       <h3 className={styles.cardTitulo}>{modulo.textoTitulo}</h3>
       <p className={styles.cardResumen}>{modulo.resumen}</p>
-      <ul className={styles.cardIncluye}>
+      <button
+        type="button"
+        className={styles.cardVerMas}
+        aria-expanded={abierto}
+        aria-controls={listaId}
+        onClick={() => setAbierto((v) => !v)}
+      >
+        {abierto ? "Ocultar detalle" : `Ver lo que incluye (${modulo.incluye.length})`}
+        <ExpandMoreRounded aria-hidden="true" />
+      </button>
+      <ul id={listaId} className={styles.cardIncluye} data-abierto={abierto}>
         {modulo.incluye.map((item) => (
           <li key={item}>
             <CheckRounded aria-hidden="true" />
@@ -86,12 +100,9 @@ const ArmaTuTar = () => {
     };
   }, [elegidos]);
 
-  const resumen =
-    elegidos.size === 0
-      ? "Elige los módulos que te interesan"
-      : esSuite
-        ? `Suite completa · ${TOTAL} módulos`
-        : `${elegidos.size} de ${TOTAL} módulos`;
+  const resumen = esSuite
+    ? `Suite completa · ${TOTAL} módulos`
+    : `${elegidos.size} de ${TOTAL} módulos`;
 
   return (
     <section
@@ -149,17 +160,15 @@ const ArmaTuTar = () => {
           {INCLUIDO_SIEMPRE.join(" · ")}
         </p>
 
-        {/* Resumen fijo al fondo mientras se recorre la sección */}
-        <div className={styles.resumen} aria-live="polite">
-          <div className={styles.resumenTexto}>
-            <span className={styles.resumenConteo}>{resumen}</span>
-            {elegidos.size > 0 && (
+        {/* Resumen fijo al fondo: solo aparece cuando ya hay módulos elegidos */}
+        {elegidos.size > 0 && (
+          <div className={styles.resumen} aria-live="polite">
+            <div className={styles.resumenTexto}>
+              <span className={styles.resumenConteo}>{resumen}</span>
               <button type="button" className={styles.resumenLimpiar} onClick={limpiar}>
                 Limpiar
               </button>
-            )}
-          </div>
-          {elegidos.size > 0 ? (
+            </div>
             <div className={styles.resumenAcciones}>
               <a
                 href={whatsapp}
@@ -167,18 +176,21 @@ const ArmaTuTar = () => {
                 rel="noopener noreferrer"
                 className="mu-btn mu-btn--primary"
               >
-                <WhatsApp aria-hidden="true" /> Solicitar propuesta
+                <WhatsApp aria-hidden="true" />
+                <span className={styles.textoLargo}>Solicitar propuesta</span>
+                <span className={styles.textoCorto}>Solicitar</span>
               </a>
-              <a href={correo} className="mu-btn mu-btn--ghost">
-                <EmailOutlined aria-hidden="true" /> Por correo
+              <a
+                href={correo}
+                className={`mu-btn mu-btn--ghost ${styles.btnCorreo}`}
+                aria-label="Solicitar propuesta por correo"
+              >
+                <EmailOutlined aria-hidden="true" />
+                <span className={styles.btnCorreoTexto}>Por correo</span>
               </a>
             </div>
-          ) : (
-            <button type="button" className="mu-btn mu-btn--ghost" onClick={elegirSuite}>
-              Elegir suite completa
-            </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

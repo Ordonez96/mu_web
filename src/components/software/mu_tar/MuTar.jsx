@@ -5,8 +5,10 @@ import { useDocumentTitle } from "../../useDocumentTittle";
 import TarMockup from "./TarMockup";
 import ModuleStory from "./ModuleStory";
 import RoBento from "./RoBento";
-import CicloRO from "./CicloRO";
 import ArmaTuTar from "./ArmaTuTar";
+import RiesgoEnMovimiento from "./RiesgoEnMovimiento";
+import HexOrbita from "../../hex/HexOrbita";
+import { useMediaQuery, MQ } from "../../../hooks/useMediaQuery";
 import { HERO, MODULOS_VENTA, PLATAFORMA, FAQ } from "./muTarContent";
 import hexStyles from "../../hex/Hex.module.css";
 import styles from "./MuTar.module.css";
@@ -20,6 +22,8 @@ const MuTar = () => {
   useDocumentTitle("MU - TAR Sistema de Administración de Riesgos");
   // --p del hero: 0 arriba del todo → 1 tras bajar ~media pantalla
   const heroRef = useScrollProgress({ inicio: 0.1, fin: -0.45 });
+  // En pantallas angostas la réplica queda ilegible: se muestra la órbita de módulos
+  const esSm = useMediaQuery(MQ.sm);
 
   return (
     <>
@@ -68,10 +72,16 @@ const MuTar = () => {
           </div>
 
           <div className={styles.heroVisual}>
-            <TarMockup />
-            <p className={styles.heroPista}>
-              Pasa el cursor por los módulos: es una réplica del Home de TAR.
-            </p>
+            {esSm ? (
+              <>
+                <TarMockup />
+                <p className={styles.heroPista}>
+                  Pasa el cursor por los módulos: es una réplica del Home de TAR.
+                </p>
+              </>
+            ) : (
+              <HexOrbita modulos={MODULOS_VENTA} />
+            )}
           </div>
         </div>
       </section>
@@ -103,16 +113,8 @@ const MuTar = () => {
         </div>
       </section> */}
 
-      {/* ================= CICLO ================= */}
-      <section className="mu-section" aria-labelledby="ciclo-titulo">
-        <div className="mu-container">
-          <h2 id="ciclo-titulo" className="mu-title">
-            El ciclo completo, en una sola herramienta
-          </h2>
-          <span className="mu-accent" />
-          <CicloRO />
-        </div>
-      </section>
+      {/* ================= RIESGO EN MOVIMIENTO (ciclo RO guiado por scroll) ================= */}
+      <RiesgoEnMovimiento id="riesgo-tar" />
 
       {/* ================= PLATAFORMA ================= */}
       <section

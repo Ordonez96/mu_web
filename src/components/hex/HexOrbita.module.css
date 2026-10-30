@@ -1,0 +1,212 @@
+/* ================= Órbita de módulos TAR =================
+   Cuadrado que escala con su ancho: todas las medidas en cqw. */
+
+.orbita {
+  --hex: 25cqw;
+  --hex-h: calc(var(--hex) * 0.866);
+  --nucleo: 34cqw;
+  --linea: rgba(30, 58, 138, 0.25);
+  --pulso: #1e40af;
+  --hex-bg: #fff;
+  --hex-borde: rgba(11, 31, 58, 0.14);
+  --hex-icono: var(--brand);
+  --hex-texto: var(--navy);
+
+  position: relative;
+  container-type: inline-size;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+
+.oscuro {
+  --linea: rgba(147, 197, 253, 0.22);
+  --pulso: #60a5fa;
+  --hex-bg: rgba(15, 35, 70, 0.85);
+  --hex-borde: rgba(96, 165, 250, 0.55);
+  --hex-icono: #93c5fd;
+  --hex-texto: #e0ecff;
+}
+
+/* ---------- Líneas con pulso que viaja del núcleo a cada módulo ---------- */
+.lineas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.lineas line {
+  stroke-width: 0.35;
+  stroke-linecap: round;
+  stroke-dasharray: 4 30;
+  stroke: var(--pulso);
+  opacity: 0.55;
+  animation: pulso 2.8s linear infinite;
+  animation-delay: calc(var(--i) * -0.45s);
+}
+
+@keyframes pulso {
+  from {
+    stroke-dashoffset: 34;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Línea base fija debajo del pulso */
+.orbita::before {
+  content: '';
+  position: absolute;
+  inset: 16cqw;
+  border-radius: 50%;
+  border: 1px dashed var(--linea);
+  opacity: 0.8;
+}
+
+/* ---------- Núcleo ---------- */
+.nucleo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-content: center;
+  width: var(--nucleo);
+  height: calc(var(--nucleo) * 0.866);
+  transform: translate(-50%, -50%);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  background: var(--grad);
+  color: #fff;
+  text-align: center;
+  animation: entrarNucleo 0.9s var(--ease) both;
+}
+
+.nucleo strong {
+  font-family: var(--font-display);
+  font-size: 7.4cqw;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.nucleo small {
+  margin-top: 0.8cqw;
+  font-size: 1.9cqw;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
+}
+
+/* Halo detrás del núcleo */
+.orbita::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 60cqw;
+  height: 60cqw;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(30, 64, 175, 0.22), transparent);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.oscuro::after {
+  background: radial-gradient(closest-side, rgba(59, 130, 246, 0.35), transparent);
+}
+
+/* ---------- Módulos ---------- */
+.modulos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.modulo {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  animation: entrar 0.8s var(--ease) both;
+  animation-delay: calc(0.25s + var(--i) * 0.08s);
+}
+
+.hex {
+  position: relative;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.8cqw;
+  width: var(--hex);
+  height: var(--hex-h);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  background: var(--hex-borde);
+  animation: flotar 6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -1s);
+}
+
+/* Relleno interior: el borde es el fondo de .hex que asoma 1.5px */
+.hex::before {
+  content: '';
+  position: absolute;
+  inset: 1.5px;
+  clip-path: inherit;
+  background: var(--hex-bg);
+  z-index: -1;
+}
+
+.hex {
+  isolation: isolate;
+}
+
+.hex svg {
+  font-size: 6.4cqw;
+  color: var(--hex-icono);
+}
+
+.etiqueta {
+  font-size: 2.7cqw;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--hex-texto);
+  text-align: center;
+  max-width: 18cqw;
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+}
+
+@keyframes entrarNucleo {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+}
+
+@keyframes flotar {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.2cqw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lineas line,
+  .hex,
+  .modulo,
+  .nucleo {
+    animation: none;
+  }
+  .lineas line {
+    stroke-dasharray: none;
+    stroke: var(--linea);
+    opacity: 1;
+  }
+}

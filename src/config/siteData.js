@@ -63,10 +63,11 @@ export const PRODUCTO_TAR = {
   descripcion: 'Software',
   ruta: '/software/mu-tar',
   icon: 'software',
-  resumen: 'TAR, Sistema de Administración de Riesgos: operativo, crédito, liquidez y LA-FT.',
+  resumen:
+    'TAR, Sistema de Administración de Riesgos: operativo, crédito, liquidez, LA-FT, RO tecnológico y RO legal. Suite completa o por módulos.',
   parrafos: [
-    'TAR es nuestro Sistema de Administración de Riesgos: riesgo operativo, riesgo de crédito, riesgo de liquidez y prevención de LA-FT en una sola plataforma web.',
-    'Lo desarrolla y lo implementa el mismo equipo que asesora a tu entidad en riesgos.',
+    'TAR es nuestro Sistema de Administración de Riesgos: riesgo operativo, crédito, liquidez, LA-FT, RO tecnológico y RO legal en una sola plataforma web.',
+    'Adquiere la suite completa o solo los módulos que necesitas. Lo implementa el mismo equipo que asesora a tu entidad en riesgos.',
   ],
 };
 

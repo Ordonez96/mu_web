@@ -159,27 +159,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ================= RIESGO EN MOVIMIENTO ================= */}
-      <RiesgoEnMovimiento id="riesgo-home" />
-
-      {/* ================= MISIÓN ================= */}
-      <section className="mu-section mu-section--alt">
-        <div className={`mu-container ${styles.split}`}>
-          <div>
-            <h2 className="mu-title">Nuestra misión</h2>
-            <span className="mu-accent" />
-            <p className={styles.mision}>
-              Proveer soluciones tecnológicas eficientes y fáciles de usar, en tiempo récord, excediendo
-              las expectativas de nuestros clientes.
-            </p>
-          </div>
-          <div>
-            <h3 className={styles.h3}>Implementación en tiempo récord gracias a</h3>
-            <HexList items={RAZONES} />
-          </div>
-        </div>
-      </section>
-
       {/* ================= TAR (sección nocturna) ================= */}
       <section className={styles.noche} aria-labelledby="tar-home-titulo">
         <div className={`mu-container ${styles.split} ${styles.splitTar}`}>
@@ -224,6 +203,27 @@ const Home = () => {
           </div>
 
           {esMd && <HexOrbita modulos={MODULOS_VENTA} tono="oscuro" />}
+        </div>
+      </section>
+
+      {/* ================= RIESGO EN MOVIMIENTO ================= */}
+      <RiesgoEnMovimiento id="riesgo-home" />
+
+      {/* ================= MISIÓN ================= */}
+      <section className="mu-section mu-section--alt">
+        <div className={`mu-container ${styles.split}`}>
+          <div>
+            <h2 className="mu-title">Nuestra misión</h2>
+            <span className="mu-accent" />
+            <p className={styles.mision}>
+              Proveer soluciones tecnológicas eficientes y fáciles de usar, en tiempo récord, excediendo
+              las expectativas de nuestros clientes.
+            </p>
+          </div>
+          <div>
+            <h3 className={styles.h3}>Implementación en tiempo récord gracias a</h3>
+            <HexList items={RAZONES} />
+          </div>
         </div>
       </section>
 

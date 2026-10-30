@@ -1,14 +1,12 @@
 /* =========================================================
-   Riesgo en movimiento (animación ligada al scroll, sin fijar la sección)
-   --p (0→1) lo escribe useScrollProgress. Fases derivadas:
-   --a aparición · --h mapa de calor · --m movimiento a residual
-   Solo se animan transform y opacity.
+   Del riesgo inherente al residual
+   Estados en la sección: data-visible · data-etapa (0-3) · data-fase
+   Solo transiciones de transform/opacity (y el color del punto al llegar).
    ========================================================= */
 
-.recorrido {
-  --p: 0;
-  --h: clamp(0, (var(--p) - 0.18) / 0.2, 1);
-  --m: clamp(0, (var(--p) - 0.42) / 0.5, 1);
+.seccion {
+  --mover-dur: 1.2s;
+  --paso: 90ms;
   overflow: hidden;
 }
 
@@ -30,7 +28,7 @@
   font-size: 1.05rem;
 }
 
-/* ---------- Etapas: la activa se resalta según data-etapa ---------- */
+/* ---------- Etapas: la actual se destaca ---------- */
 .etapas {
   --mover: 6px;
   display: grid;
@@ -48,7 +46,8 @@
   padding: 10px 12px;
   border-radius: 12px;
   opacity: 0.45;
-  transition: opacity 0.4s var(--ease), background-color 0.4s var(--ease), transform 0.4s var(--ease);
+  transition: opacity 0.4s var(--ease), background-color 0.4s var(--ease), transform 0.4s var(--ease),
+    box-shadow 0.4s var(--ease);
 }
 
 .etapaNum {
@@ -79,28 +78,28 @@
   line-height: 1.45;
 }
 
-/* Etapas ya alcanzadas: legibles; la actual: destacada */
-.recorrido[data-etapa='0'] .etapa[data-n='0'],
-.recorrido[data-etapa='1'] .etapa:is([data-n='0'], [data-n='1']),
-.recorrido[data-etapa='2'] .etapa:is([data-n='0'], [data-n='1'], [data-n='2']),
-.recorrido[data-etapa='3'] .etapa {
+/* Etapas ya alcanzadas: legibles */
+.seccion[data-etapa='1'] .etapa[data-n='0'],
+.seccion[data-etapa='2'] .etapa:is([data-n='0'], [data-n='1']),
+.seccion[data-etapa='3'] .etapa {
   opacity: 0.8;
 }
 
-.recorrido[data-etapa='0'] .etapa[data-n='0'],
-.recorrido[data-etapa='1'] .etapa[data-n='1'],
-.recorrido[data-etapa='2'] .etapa[data-n='2'],
-.recorrido[data-etapa='3'] .etapa[data-n='3'] {
+/* Etapa actual (solo cuando el mapa ya está en pantalla) */
+.seccion[data-visible='true'][data-etapa='0'] .etapa[data-n='0'],
+.seccion[data-etapa='1'] .etapa[data-n='1'],
+.seccion[data-etapa='2'] .etapa[data-n='2'],
+.seccion[data-etapa='3'] .etapa[data-n='3'] {
   opacity: 1;
   background: #fff;
   box-shadow: var(--shadow-sm);
   transform: translateX(var(--mover));
 }
 
-.recorrido[data-etapa='0'] .etapa[data-n='0'] .etapaNum,
-.recorrido[data-etapa='1'] .etapa[data-n='1'] .etapaNum,
-.recorrido[data-etapa='2'] .etapa[data-n='2'] .etapaNum,
-.recorrido[data-etapa='3'] .etapa[data-n='3'] .etapaNum {
+.seccion[data-visible='true'][data-etapa='0'] .etapa[data-n='0'] .etapaNum,
+.seccion[data-etapa='1'] .etapa[data-n='1'] .etapaNum,
+.seccion[data-etapa='2'] .etapa[data-n='2'] .etapaNum,
+.seccion[data-etapa='3'] .etapa[data-n='3'] .etapaNum {
   background: var(--grad);
   color: #fff;
 }
@@ -150,10 +149,10 @@
   height: 100%;
   background: linear-gradient(90deg, var(--r-bajo), var(--r-alto) 60%, var(--r-critico));
   transform-origin: left;
-  transform: scaleX(var(--exp, 1));
+  transition: transform var(--mover-dur) var(--ease);
 }
 
-/* ---------- Panel con la matriz ---------- */
+/* ---------- Panel ---------- */
 .panel {
   padding: clamp(16px, 2.4vw, 24px);
   border-radius: var(--radius);
@@ -176,33 +175,50 @@
   color: var(--navy);
 }
 
-/* Etiqueta que cambia de "Inherente" a "Residual" con la fase de movimiento */
-.estado {
-  position: relative;
-  display: inline-grid;
-  font-size: 0.78rem;
-  font-weight: 600;
-}
-
-.estado > span {
-  grid-area: 1 / 1;
-  padding: 4px 12px;
+/* Selector Inherente | Residual */
+.selector {
+  display: inline-flex;
+  padding: 3px;
   border-radius: 999px;
-  text-align: center;
+  background: rgba(11, 31, 58, 0.06);
 }
 
-.estadoInherente {
-  background: rgba(214, 59, 85, 0.12);
+.selector button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.selector button:hover {
+  color: var(--navy);
+}
+
+.selector .sel_inherente[aria-pressed='true'] {
+  background: #fff;
   color: #b4233e;
-  opacity: calc(1 - var(--m));
+  box-shadow: var(--shadow-sm);
 }
 
-.estadoResidual {
-  background: rgba(15, 159, 143, 0.14);
+.selector .sel_residual[aria-pressed='true'] {
+  background: #fff;
   color: #0b7a6e;
-  opacity: var(--m);
+  box-shadow: var(--shadow-sm);
 }
 
+.selector button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+
+/* ---------- Matriz ---------- */
 .matriz {
   display: grid;
   grid-template-columns: 22px minmax(0, 1fr);
@@ -236,7 +252,7 @@
   aspect-ratio: 1;
 }
 
-/* Celda: tinte suave siempre + intensidad que crece en la fase "Medir" */
+/* Celda: tinte suave; en "Medir" se enciende el mapa de calor */
 .celda {
   position: relative;
   border-radius: 8px;
@@ -249,25 +265,70 @@
   position: absolute;
   inset: 0;
   background: var(--c);
-  opacity: calc(0.08 + var(--h) * 0.22);
+  opacity: 0.12;
+  transition: opacity 0.8s var(--ease);
 }
 
-/* ---------- Puntos de riesgo ----------
-   .punto ocupa todo el tablero: así translate(%) usa el tamaño del tablero
-   (cada celda = 20 %). .bola queda en la posición inherente. */
-.capaPuntos {
+.seccion:not([data-etapa='0']) .celda::after {
+  opacity: 0.3;
+}
+
+/* ---------- Trayectos y posición original ---------- */
+.trayectos {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
   pointer-events: none;
 }
 
+.trayectos line {
+  stroke: var(--navy);
+  stroke-width: 1.5;
+  stroke-opacity: 0.35;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.seccion[data-fase='residual'] .trayectos line {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset var(--mover-dur) var(--ease) calc(var(--k) * var(--paso));
+}
+
+/* Huella punteada donde estaba el riesgo */
+.fantasma {
+  position: absolute;
+  width: clamp(16px, 6%, 26px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px dashed rgba(11, 31, 58, 0.45);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.seccion[data-fase='residual'] .fantasma {
+  opacity: 1;
+  transition: opacity 0.4s ease calc(var(--k) * var(--paso));
+}
+
+/* ---------- Puntos ----------
+   .punto ocupa todo el tablero: translate(%) usa su tamaño (cada celda = 20 %) */
 .punto {
-  --a: clamp(0, (var(--p) - var(--k) * 0.015) / 0.12, 1);
-  --mk: clamp(0, var(--m) * 1.6 - var(--k) * 0.075, 1);
   position: absolute;
   inset: 0;
-  transform: translate(calc(var(--dx) * 20% * var(--mk)), calc(var(--dy) * 20% * var(--mk)));
-  will-change: transform;
+  pointer-events: none;
+  transition: transform calc(var(--mover-dur) * 0.6) var(--ease);
+}
+
+.seccion[data-fase='residual'] .punto {
+  transform: translate(calc(var(--dx) * 20%), calc(var(--dy) * 20%));
+  transition: transform var(--mover-dur) var(--ease) calc(var(--k) * var(--paso));
 }
 
 .bola {
@@ -278,53 +339,68 @@
   background: var(--c0);
   border: 3px solid #fff;
   box-shadow: 0 6px 16px -6px rgba(11, 31, 58, 0.55);
-  transform: translate(-50%, -50%) scale(var(--a));
-  opacity: var(--a);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s var(--ease) calc(var(--k) * 70ms), background-color 0.3s ease;
 }
 
-/* Capa del color residual que aparece mientras el punto se mueve */
-.bola::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
+.seccion[data-visible='true'] .bola {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* El color cambia al llegar (sin mezclas intermedias) */
+.seccion[data-fase='residual'] .bola {
   background: var(--c1);
-  opacity: var(--mk);
+  transition: transform 0.5s var(--ease), background-color 0.35s ease
+    calc(var(--mover-dur) * 0.85 + var(--k) * var(--paso));
+}
+
+/* ---------- Leyenda ---------- */
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 14px 0 0 28px;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.leyenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.leyenda span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
 
 .nota {
-  margin: 12px 0 0;
-  font-size: 0.78rem;
+  margin: 10px 0 0;
+  font-size: 0.75rem;
   color: var(--muted);
   text-align: right;
 }
 
-/* ---------- Móvil: todo en una pantalla, etapas compactas ---------- */
+/* ---------- Móvil ---------- */
 @media (max-width: 899.98px) {
   .grid {
     grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .titulo {
-    font-size: clamp(1.45rem, 6vw, 1.9rem);
-    margin-bottom: 8px;
+    gap: 16px;
   }
 
   .lead {
     margin-bottom: 4px;
   }
 
-  .nota {
-    display: none;
-  }
-
-  /* Cuatro pasos en fila; solo el actual muestra su descripción */
+  /* Cuatro pasos en fila; la descripción se omite para ahorrar alto */
   .etapas {
     --mover: 0px;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 6px;
-    margin-bottom: 12px;
+    margin-bottom: 0;
   }
 
   .etapa {
@@ -349,7 +425,23 @@
     font-size: 0.8rem;
   }
 
-  .metricas {
+  /* Orden: texto y etapas → mapa → métricas */
+  .texto {
+    display: contents;
+  }
+
+  .texto > * {
+    order: 1;
+  }
+
+  .visual {
+    order: 2;
+    width: 100%;
+    max-width: 460px;
+    margin-inline: auto;
+  }
+
+  .texto > .metricas {
     order: 3;
     gap: 8px;
   }
@@ -362,15 +454,17 @@
     font-size: 1.5rem;
   }
 
-  .visual {
-    width: 100%;
-    max-width: 440px;
-    margin-inline: auto;
+  .panel {
+    padding: 14px;
+    border-radius: 16px;
   }
 
-  .panel {
-    padding: 12px;
-    border-radius: 16px;
+  .panelTitulo {
+    font-size: 0.95rem;
+  }
+
+  .selector button {
+    padding: 0 10px;
   }
 
   .tablero {
@@ -382,30 +476,19 @@
   }
 }
 
-/* El texto va arriba en móvil, las métricas debajo del mapa */
-@media (max-width: 899.98px) {
-  .texto {
-    display: contents;
-  }
-
-  /* Texto y etapas arriba, mapa en medio, métricas al final */
-  .texto > * {
-    order: 1;
-  }
-
-  .texto > .metricas {
-    order: 3;
-  }
-
-  .visual {
-    order: 2;
-  }
-}
-
-/* Sin animación: el hook deja --p en 1 (estado final) */
 @media (prefers-reduced-motion: reduce) {
   .etapa,
-  .etapaNum {
+  .etapaNum,
+  .celda::after,
+  .barra span,
+  .bola,
+  .punto,
+  .fantasma,
+  .trayectos line,
+  .seccion[data-fase='residual'] .punto,
+  .seccion[data-fase='residual'] .bola,
+  .seccion[data-fase='residual'] .fantasma,
+  .seccion[data-fase='residual'] .trayectos line {
     transition: none;
   }
 }

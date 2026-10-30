@@ -203,7 +203,6 @@ const RiesgoEnMovimiento = ({ id = 'riesgo-en-movimiento' }) => {
                       y1={cy(r.p0)}
                       x2={cx(r.i1)}
                       y2={cy(r.p1)}
-                      pathLength="1"
                       style={{ '--k': r.k }}
                     />
                   ))}

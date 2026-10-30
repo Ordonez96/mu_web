@@ -289,14 +289,14 @@
   stroke-opacity: 0.35;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset 0.3s ease;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
+/* La línea aparece mientras el punto recorre el trayecto */
 .seccion[data-fase='residual'] .trayectos line {
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset var(--mover-dur) var(--ease) calc(var(--k) * var(--paso));
+  opacity: 1;
+  transition: opacity calc(var(--mover-dur) * 0.6) ease calc(var(--k) * var(--paso) + 0.2s);
 }
 
 /* Huella punteada donde estaba el riesgo */

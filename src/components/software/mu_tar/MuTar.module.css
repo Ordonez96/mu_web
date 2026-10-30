@@ -276,6 +276,13 @@
   background: var(--grad);
 }
 
+/* Bajo 640px la órbita ya muestra los módulos: los chips serían repetidos */
+@media (max-width: 639.98px) {
+  .heroModulos {
+    display: none;
+  }
+}
+
 /* En pantallas táctiles no hay "pasar el cursor" */
 @media (hover: none) {
   .heroPista {
